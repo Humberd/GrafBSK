@@ -1,0 +1,7 @@
+-Rysuje się przytrzymując Lewy Przycisk Myszy
+-Możliwe 3 kategorie kształtów do rysowania: Linia, Prostokąt oraz Kółko
+-Jest możliwość cofania i ponawiania (undo, redo)
+-Jest możliwość edycji ostatnio narysowanego elementu poprzez naciśnięcie przycisku "Edit". W prawym górnym rogu
+powinna pojawić się sygnalizacja, że tryb edycji został włączony. Teraz ostatnio narysowany element będzie podmieniany tym,
+który będziemy rysować.
+-Plik wykonywalny ".jar" znajduje się w katalogu "/dist"
