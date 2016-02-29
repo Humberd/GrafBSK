@@ -21,7 +21,7 @@ public class DrawingPanel extends JPanel {
     private LinkedList<DrawingClass> drawingList = new LinkedList<>();
     private LinkedList<History> undoList = new LinkedList<>();
     private LinkedList<History> redoList = new LinkedList<>();
-    private boolean inEditMode = true;
+    private boolean inEditMode = false;
     private boolean inTranslateMode = false;
     private boolean inRotateMode = false;
     private boolean inScaleMode = false;

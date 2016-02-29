@@ -112,7 +112,7 @@ public class Prymitywy extends JPanel {
     }
 
     private void addEditPanel() {
-        editPanel.setVisible(true);
+        editPanel.setVisible(false);
         editPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
@@ -207,6 +207,7 @@ public class Prymitywy extends JPanel {
 
     private void setInEditMode(boolean editMode) {
         editPanel.setVisible(editMode);
+        drawingPanel.setTransformation(null);
     }
 
     private void clearEditModes() {
