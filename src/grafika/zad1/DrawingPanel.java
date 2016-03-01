@@ -67,7 +67,6 @@ public class DrawingPanel extends JPanel {
     }
 
     public void updateModelValues(int startX, int startY, int endX, int endY) {
-        System.out.println(startX + " " + startY + " " + endX + " " + endY);
         currentDrawing.setStartX(startX);
         currentDrawing.setStartY(startY);
         currentDrawing.setCurrentX(endX);

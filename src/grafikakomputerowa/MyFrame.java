@@ -4,7 +4,7 @@ import bsk.szyfrowanie1.MatrixTransposition1;
 import bsk.szyfrowanie1.MatrixTransposition2;
 import bsk.szyfrowanie1.RailFence;
 import grafika.zad1.Prymitywy;
-import grafika.zad2.PPM;
+import grafika.zad2.ImageEditor;
 import bsk.szyfrowanie1.TemplatePanel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -53,7 +53,7 @@ public class MyFrame extends JFrame {
             }
 
         });
-        menuItem = addMenuItem(false, new JMenuItem("2. PPM"), new PPM(), programsMap, new Runnable() {
+        menuItem = addMenuItem(true, new JMenuItem("2. PPM"), new ImageEditor(), programsMap, new Runnable() {
             @Override
             public void run() {
                 System.out.println("22222");
@@ -79,7 +79,7 @@ public class MyFrame extends JFrame {
 
         });
         
-        menuItem2 = addMenuItem(true, new JMenuItem("3. Matrix Transposition2"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(false, new JMenuItem("3. Matrix Transposition2"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 2");
