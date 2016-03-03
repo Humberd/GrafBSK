@@ -50,10 +50,7 @@ public class MatrixTransposition2 implements Cipher {
 
     @Override
     public String encrypt(String message, String key) throws CipherException {
-        return encrypt(message, validateKey(key));
-    }
-
-    private String encrypt(String message, int[] keyArray) throws CipherException {
+        int[] keyArray = validateKey(key);
         int keyLength = keyArray.length;
         int messageLength = message.length();
         int rowsNumber = (messageLength % keyLength > 0) ? messageLength / keyLength + 1 : messageLength / keyLength;
@@ -66,82 +63,46 @@ public class MatrixTransposition2 implements Cipher {
                 if (keyArray[i] + (keyLength * j) < messageLength) {
                     result[counter++] = message.charAt(keyArray[i] + (keyLength * j));
                 }
-
             }
-
         }
         return new String(result);
     }
 
-    private int[] generateDecryptKey(String keyText) throws CipherException {
-        if (!Pattern.matches("[a-zA-Z]+", keyText)) {
-            throw new CipherException("Key value can contain only letters");
-        }
-
-        int[] keyArray = new int[keyText.length()];
-        int alphabetLength = 25;
-        int firstLetter = 65;
-        keyText = keyText.toUpperCase();
-        int counter = 0;
-
-        for (int i = 0; i < alphabetLength; i++) {
-            for (int k = 0; k < keyText.length(); k++) {
-                if ((int) keyText.charAt(k) == firstLetter + i) {
-                    keyArray[k] = counter++;
-                }
-            }
-        }
-        return keyArray;
-    }
-
     @Override
     public String decrypyt(String message, String key) throws CipherException {
-        int[] keyArray = generateDecryptKey(key);
+        int[] keyArray = validateKey(key);
         int keyLength = keyArray.length;
         int messageLength = message.length();
-        int remainder = keyLength - (messageLength % keyLength);
+        int remainder = messageLength % keyLength;
         int rowsNumber = (messageLength % keyLength > 0) ? messageLength / keyLength + 1 : messageLength / keyLength;
 
         char[] result = new char[messageLength];
         int counter = 0;
 
-        int amount = 0;
-        for (int i = 0; i < keyLength; i++) {
-            
-            if ((keyArray[i] + remainder) > keyLength) {
-                amount++;
-            }
-            System.out.println(keyArray[i]+" + "+remainder+" > "+keyLength);
-            System.out.println(amount);
+        char[][] messageArray = new char[rowsNumber][keyLength];
 
-//            for (int j = 0; j < (amount > 0 ? rowsNumber - 1 : rowsNumber); j++) {
-////                result[keyArray[i] * j - amount] = message.charAt()
-//                System.out.println(j * rowsNumber + keyArray[i]);
-//            }
-//            System.out.println("________");
-//            int addAmount = 0;
-//            if (i + remainder > keyLength) {
-//                addAmount = 0;
-//            } else {
-//                addAmount++;
-//            }
-//            for (int j = 0; j < rowsNumber; j++) {
-//                if (addAmount > 0) {
-//                    if (rowsNumber - 1 == j) {
-//                        break;
-//                    }
-//                }
-//                if (keyArray[i] * rowsNumber - addAmount < messageLength) {
-//                    result[counter++] = message.charAt(keyArray[i] * rowsNumber - addAmount);
-//                }
-//                if (j * keyLength + i < messageLength) {
-//                    result[counter++] = message.charAt(j * keyLength + keyArray[i]);
-//                    System.out.println(j * keyLength + keyArray[i]);
-//                }
-//            }
+        for (int i = 0; i < keyLength; i++) {
+            for (int j = 0; j < rowsNumber; j++) {
+                if (j == rowsNumber - 1) {
+                    if (keyArray[i] < remainder) {
+                        messageArray[j][keyArray[i]] = message.charAt(counter++);
+                    }
+                } else {
+                    messageArray[j][keyArray[i]] = message.charAt(counter++);
+                }
+            }
         }
+
+        counter = 0;
+        for (int i = 0; i < rowsNumber; i++) {
+            for (int j = 0; j < keyLength; j++) {
+                if (counter < result.length) {
+                    result[counter++] = messageArray[i][j];
+                }
+            }
+        }
+
         return new String(result);
-//        return encrypt(message, generateDecryptKey(key));
     }
 
     @Override
@@ -151,8 +112,8 @@ public class MatrixTransposition2 implements Cipher {
 
     @Override
     public String getTemplateMessage() {
-//        return "HEREISASECRETMESSAGEENCIPHEREDBYTRANSPOSITION";
-        return "HECRNCEYIISEPSGDIRNTOAAESRMPNSSROEEBTETIAEEHS";
+//        return "HERE IS A SECRET MESSAGE ENCIPHERED BY TRANSPOSITION";
+        return "HEREISASECRETMESSAGEENCIPHEREDBYTRANSPOSITION";
     }
 
     @Override

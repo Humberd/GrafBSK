@@ -16,7 +16,6 @@ public class ImageEditor extends JPanel {
 
     public ImageEditor() {
         super();
-        setBackground(Color.red);
         MouseAdapter adapter = new MouseAdapter() {
         };
     }

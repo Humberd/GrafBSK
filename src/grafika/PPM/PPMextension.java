@@ -4,9 +4,15 @@ import grafika.exceptions.FileException;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PPMextension extends FileType {
 
@@ -19,10 +25,13 @@ public class PPMextension extends FileType {
 
     @Override
     public void openFile() throws FileException {
+
         try {
+//            byte[] array = Files.readAllBytes(new File(getFilePath()).toPath());
+//            reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(array)));
             reader = new BufferedReader(new FileReader(getFilePath()));
-        } catch (FileNotFoundException ex) {
-            throw new FileException("File \"" + getFilePath() + "\" does not exist.");
+        } catch (FileNotFoundException ex) { 
+            Logger.getLogger(PPMextension.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try {
@@ -52,12 +61,12 @@ public class PPMextension extends FileType {
 
             if (ppmType.getColumns() == ppmType.getCurrentColumnPixelRead() && ppmType.getRows() == ppmType.getCurrentRowPixelRead()) {
                 //jesli plik jest poprawny
-                for (int i = 0; i < ppmType.getRows(); i++) {
-                    for (int j = 0; j < ppmType.getColumns(); j++) {
-                        System.out.print("[" + ppmType.getRedPixels()[i][j] + "," + ppmType.getGreenPixels()[i][j] + "," + ppmType.getBluePixels()[i][j] + "]");
-                    }
-                    System.out.println();
-                }
+//                for (int i = 0; i < ppmType.getRows(); i++) {
+//                    for (int j = 0; j < ppmType.getColumns(); j++) {
+//                        System.out.print("[" + ppmType.getRedPixels()[i][j] + "," + ppmType.getGreenPixels()[i][j] + "," + ppmType.getBluePixels()[i][j] + "]");
+//                    }
+//                    System.out.println();
+//                }
                 BufferedImage image = new BufferedImage(ppmType.getColumns(), ppmType.getRows(), BufferedImage.TYPE_INT_RGB);
                 for (int i = 0; i < ppmType.getRows(); i++) {
                     for (int j = 0; j < ppmType.getColumns(); j++) {

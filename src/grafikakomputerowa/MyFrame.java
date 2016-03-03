@@ -79,7 +79,7 @@ public class MyFrame extends JFrame {
 
         });
         
-        menuItem2 = addMenuItem(false, new JMenuItem("3. Matrix Transposition2"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(true, new JMenuItem("3. Matrix Transposition2"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 2");
