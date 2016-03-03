@@ -4,7 +4,7 @@ import bsk.szyfrowanie1.MatrixTransposition1;
 import bsk.szyfrowanie1.MatrixTransposition2;
 import bsk.szyfrowanie1.RailFence;
 import grafika.zad1.Prymitywy;
-import grafika.zad2.ImageEditor;
+import grafika.zad2.ImageWindow;
 import bsk.szyfrowanie1.TemplatePanel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -53,7 +53,7 @@ public class MyFrame extends JFrame {
             }
 
         });
-        menuItem = addMenuItem(true, new JMenuItem("2. PPM"), new ImageEditor(), programsMap, new Runnable() {
+        menuItem = addMenuItem(true, new JMenuItem("2. PPM"), new ImageWindow(), programsMap, new Runnable() {
             @Override
             public void run() {
                 System.out.println("22222");
