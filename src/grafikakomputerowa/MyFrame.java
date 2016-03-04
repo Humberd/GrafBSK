@@ -2,6 +2,7 @@ package grafikakomputerowa;
 
 import bsk.szyfrowanie1.MatrixTransposition1;
 import bsk.szyfrowanie1.MatrixTransposition2;
+import bsk.szyfrowanie1.MatrixTransposition3;
 import bsk.szyfrowanie1.RailFence;
 import grafika.zad1.Prymitywy;
 import grafika.zad2.ImageWindow;
@@ -71,7 +72,7 @@ public class MyFrame extends JFrame {
             }
         });
 
-        menuItem2 = addMenuItem(false, new JMenuItem("2. Matrix Transposition1"), new TemplatePanel(new MatrixTransposition1()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(false, new JMenuItem("2. Matrix Transposition (2a)"), new TemplatePanel(new MatrixTransposition1()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 1");
@@ -79,10 +80,17 @@ public class MyFrame extends JFrame {
 
         });
         
-        menuItem2 = addMenuItem(true, new JMenuItem("3. Matrix Transposition2"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(true, new JMenuItem("3. Matrix Transposition (2b)"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 2");
+            }
+        });
+        
+        menuItem2 = addMenuItem(true, new JMenuItem("4. Matrix Transposition (2c)"), new TemplatePanel(new MatrixTransposition3()), bskZad1Map, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("BSK: Transposition: Matrix Transposition 3");
             }
         });
 

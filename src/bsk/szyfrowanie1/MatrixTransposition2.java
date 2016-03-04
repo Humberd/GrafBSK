@@ -107,7 +107,7 @@ public class MatrixTransposition2 implements Cipher {
 
     @Override
     public String getCipherName() {
-        return "Matrix Transposition (Key - Word)";
+        return "Matrix Transposition (Key - Word)(Columns)";
     }
 
     @Override
