@@ -49,6 +49,11 @@ public class TemplatePanel extends JPanel {
     private JButton encryptButton = new JButton("Encrypt");
     private JButton decryptButton = new JButton("Decrypt");
 
+    private JPanel titlePanel = new JPanel();
+    private JPanel resultPanel = new JPanel();
+    private JPanel inputPanel = new JPanel();
+    private JPanel actionPanel = new JPanel();
+    
     private Cipher cipher;
 
     public TemplatePanel(Cipher cipher) {
@@ -71,16 +76,12 @@ public class TemplatePanel extends JPanel {
     }
 
     private void addMainPanels() {
-        JPanel titlePanel = new JPanel();
 //        titlePanel.setBackground(Color.red);
         setTitlePanel(titlePanel);
-        JPanel resultPanel = new JPanel();
 //        resultPanel.setBackground(Color.yellow);
         setResultPanel(resultPanel);
-        JPanel inputPanel = new JPanel();
 //        inputPanel.setBackground(Color.green);
         setInputPanel(inputPanel);
-        JPanel actionPanel = new JPanel();
 //        actionPanel.setBackground(Color.blue);
         setActionPanel(actionPanel);
         setLayout(new GridBagLayout());
@@ -332,12 +333,12 @@ public class TemplatePanel extends JPanel {
         attachActionButton(encryptButton, new Runnable() {
             @Override
             public void run() {
-                String message = messageInput.getText() != null ? messageInput.getText() : "";
-                String key = keyInput.getText() != null ? keyInput.getText() : "";
+                String message = getMessageInput().getText() != null ? getMessageInput().getText() : "";
+                String key = getKeyInput().getText() != null ? getKeyInput().getText() : "";
                 setMessageOutputText(message);
                 setKeyOutputText(key);
                 try {
-                    setCorrectResult(cipher.encrypt(message, key));
+                    setCorrectResult(getCipher().encrypt(message, key));
                 } catch (CipherException ex) {
                     setErrorResult(ex.getMessage());
                 } catch (Exception ex) {
@@ -350,12 +351,12 @@ public class TemplatePanel extends JPanel {
         attachActionButton(decryptButton, new Runnable() {
             @Override
             public void run() {
-                String message = messageInput.getText() != null ? messageInput.getText() : "";
-                String key = keyInput.getText() != null ? keyInput.getText() : "";
+                String message = getMessageInput().getText() != null ? getMessageInput().getText() : "";
+                String key = getKeyInput().getText() != null ? getKeyInput().getText() : "";
                 setMessageOutputText(message);
                 setKeyOutputText(key);
                 try {
-                    setCorrectResult(cipher.decrypyt(message, key));
+                    setCorrectResult(getCipher().decrypyt(message, key));
                 } catch (CipherException ex) {
                     setErrorResult(ex.getMessage());
                 } catch (Exception ex) {
@@ -390,6 +391,150 @@ public class TemplatePanel extends JPanel {
     private void setActionButtonsEnabled(boolean enabled) {
         encryptButton.setEnabled(enabled);
         encryptButton.setEnabled(enabled);
+    }
+
+    public JTextField getMessageInput() {
+        return messageInput;
+    }
+
+    public void setMessageInput(JTextField messageInput) {
+        this.messageInput = messageInput;
+    }
+
+    public JTextField getKeyInput() {
+        return keyInput;
+    }
+
+    public void setKeyInput(JTextField keyInput) {
+        this.keyInput = keyInput;
+    }
+
+    public Cipher getCipher() {
+        return cipher;
+    }
+
+    public void setCipher(Cipher cipher) {
+        this.cipher = cipher;
+    }
+
+    public JLabel getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(JLabel pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
+    public JLabel getKeyOutputLabel() {
+        return keyOutputLabel;
+    }
+
+    public void setKeyOutputLabel(JLabel keyOutputLabel) {
+        this.keyOutputLabel = keyOutputLabel;
+    }
+
+    public JLabel getMessageOutputLabel() {
+        return messageOutputLabel;
+    }
+
+    public void setMessageOutputLabel(JLabel messageOutputLabel) {
+        this.messageOutputLabel = messageOutputLabel;
+    }
+
+    public JLabel getResultOutputLabel() {
+        return resultOutputLabel;
+    }
+
+    public void setResultOutputLabel(JLabel resultOutputLabel) {
+        this.resultOutputLabel = resultOutputLabel;
+    }
+
+    public JLabel getMessageInputLabel() {
+        return messageInputLabel;
+    }
+
+    public void setMessageInputLabel(JLabel messageInputLabel) {
+        this.messageInputLabel = messageInputLabel;
+    }
+
+    public JLabel getKeyInputLabel() {
+        return keyInputLabel;
+    }
+
+    public void setKeyInputLabel(JLabel keyInputLabel) {
+        this.keyInputLabel = keyInputLabel;
+    }
+
+    public JTextArea getKeyOutput() {
+        return keyOutput;
+    }
+
+    public void setKeyOutput(JTextArea keyOutput) {
+        this.keyOutput = keyOutput;
+    }
+
+    public JTextArea getMessageOutput() {
+        return messageOutput;
+    }
+
+    public void setMessageOutput(JTextArea messageOutput) {
+        this.messageOutput = messageOutput;
+    }
+
+    public JTextArea getResultOutput() {
+        return resultOutput;
+    }
+
+    public void setResultOutput(JTextArea resultOutput) {
+        this.resultOutput = resultOutput;
+    }
+
+    public JButton getMessageInputPasteButton() {
+        return messageInputPasteButton;
+    }
+
+    public void setMessageInputPasteButton(JButton messageInputPasteButton) {
+        this.messageInputPasteButton = messageInputPasteButton;
+    }
+
+    public JButton getKeyOutputCopyButton() {
+        return keyOutputCopyButton;
+    }
+
+    public void setKeyOutputCopyButton(JButton keyOutputCopyButton) {
+        this.keyOutputCopyButton = keyOutputCopyButton;
+    }
+
+    public JButton getMessageOutputCopyButton() {
+        return messageOutputCopyButton;
+    }
+
+    public void setMessageOutputCopyButton(JButton messageOutputCopyButton) {
+        this.messageOutputCopyButton = messageOutputCopyButton;
+    }
+
+    public JButton getResultOutputCopyButton() {
+        return resultOutputCopyButton;
+    }
+
+    public void setResultOutputCopyButton(JButton resultOutputCopyButton) {
+        this.resultOutputCopyButton = resultOutputCopyButton;
+    }
+
+    public JButton getEncryptButton() {
+        return encryptButton;
+    }
+
+    public void setEncryptButton(JButton encryptButton) {
+        this.encryptButton = encryptButton;
+    }
+
+    public JButton getDecryptButton() {
+        return decryptButton;
+    }
+
+    public void setDecryptButton(JButton decryptButton) {
+        this.decryptButton = decryptButton;
     }
 
 }

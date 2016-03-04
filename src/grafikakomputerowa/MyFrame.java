@@ -1,5 +1,7 @@
 package grafikakomputerowa;
 
+import bsk.szyfrowanie1.Caesar;
+import bsk.szyfrowanie1.CaesarPanel;
 import bsk.szyfrowanie1.MatrixTransposition1;
 import bsk.szyfrowanie1.MatrixTransposition2;
 import bsk.szyfrowanie1.MatrixTransposition3;
@@ -91,6 +93,13 @@ public class MyFrame extends JFrame {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 3");
+            }
+        });
+        
+        menuItem2= addMenuItem(true, new JMenuItem("5. Caesar"), new CaesarPanel(new Caesar()), bskZad1Map, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("BSK: Transposition: Caesar");
             }
         });
 
