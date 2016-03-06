@@ -56,6 +56,23 @@ public class MatrixTransposition3 implements Cipher {
                 break;
             }
         }
+//        int lettersNumberInBlock = 0;
+//        for (int i = 1; i <= keyLength; i++) {
+//            lettersNumberInBlock += i;
+//        }
+//        int blocksNumber = (messageLength % lettersNumberInBlock > 0) ? messageLength / lettersNumberInBlock + 1 : messageLength / lettersNumberInBlock;
+//       
+//        
+//        for (int i=0; i < blocksNumber; i++) {
+//            if (i == blocksNumber -1 ) {
+//                
+//            } else {
+//                
+//            }
+//        }
+//        double temp = ((double) (1 + keyLength) / 2) * keyLength;
+//        System.out.println(temp);
+
         Character[][] messageArray = new Character[rowsNumber][keyLength];
         int counter = 0;
         for (int i = 0; i < rowsNumber; i++) {
@@ -77,6 +94,10 @@ public class MatrixTransposition3 implements Cipher {
                     result[counter++] = messageArray[j][keyArray[i]];
                 }
             }
+        }
+        int temp = (int)((double) (1 + keyLength) / 2) * keyLength;
+        if (message.length() > temp) {
+            return new String(result) + encrypt(message.substring(temp), key);
         }
         return new String(result);
     }
@@ -120,11 +141,10 @@ public class MatrixTransposition3 implements Cipher {
                 }
             }
         }
-        
+
 //        for (int i = 0; i < rowsNumber; i++) {
 //            System.out.println(Arrays.toString(messageArray[i]));
 //        }
-        
         char[] result = new char[messageLength];
         counter = 0;
         for (int i = 0; i < rowsNumber; i++) {
@@ -147,14 +167,17 @@ public class MatrixTransposition3 implements Cipher {
 
     @Override
     public String getTemplateMessage() {
-        return "HERE IS A SECRET MESSAGE ENCIPHERED BY TRANSPOSITION";
+//        return "HERE IS A SECRET MESSAGE ENCIPHERED BY TRANSPOSITION";
 //        return "HEREISASECRETMESSAGEENCIPHEREDBYTRANSPOSITION";
 //        return "HEESPNIRRSSEESEIYASCBTEMGEPNANDICTRTAHSOIEERO";
+//        return "ALA MA KOTA KOT MA ALE";
+        return "ALA MA KOTA";
     }
 
     @Override
     public String getTemplateKey() {
-        return "CONVENIENCE";
+//        return "CONVENIENCE";
+        return "ALA";
     }
 
 }

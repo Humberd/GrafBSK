@@ -82,21 +82,21 @@ public class MyFrame extends JFrame {
 
         });
         
-        menuItem2 = addMenuItem(true, new JMenuItem("3. Matrix Transposition (2b)"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(false, new JMenuItem("3. Matrix Transposition (2b)"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 2");
             }
         });
         
-        menuItem2 = addMenuItem(true, new JMenuItem("4. Matrix Transposition (2c)"), new TemplatePanel(new MatrixTransposition3()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(false, new JMenuItem("4. Matrix Transposition (2c)"), new TemplatePanel(new MatrixTransposition3()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 3");
             }
         });
         
-        menuItem2= addMenuItem(true, new JMenuItem("5. Caesar"), new CaesarPanel(new Caesar()), bskZad1Map, new Runnable() {
+        menuItem2= addMenuItem(false, new JMenuItem("5. Caesar"), new TemplatePanel(new Caesar()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Caesar");

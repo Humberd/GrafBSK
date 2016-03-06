@@ -1,20 +1,33 @@
 package bsk.szyfrowanie1;
 
 import bsk.exceptions.CipherException;
+import java.util.Arrays;
 
 public class Caesar implements Cipher {
 
-    private int validateKey(String keyText) throws CipherException {
-        int key = 0;
-        try {
-            keyText = keyText.trim();
-            key = Integer.parseInt(keyText);
-        } catch (NumberFormatException ex) {
-            throw new CipherException("Key value is not a number");
+    private int[] validateKey(String keyText) throws CipherException {
+        int[] key = new int[2];
+        keyText = keyText.replaceAll(" ", "");
+        String[] keyArray = keyText.split(",");
+        int alphabetLength = 26;
+        if (keyArray.length != 2) {
+            throw new CipherException("Key values must be seperated by ','");
         }
 
-        if (key <= 0) {
-            throw new CipherException("Key value must be higher than 0");
+        for (int i = 0; i < 2; i++) {
+            try {
+                key[i] = Integer.parseInt(keyArray[i]);
+            } catch (NumberFormatException ex) {
+                throw new CipherException("Key value '" + keyArray[i] + "' cannot be parsed into the Integer");
+            }
+
+            if (key[i] <= 0) {
+                throw new CipherException("Key value '" + key[i] + "' must be higher than 0");
+            }
+
+            if (!areRelativelyPrime(key[i], alphabetLength)) {
+                throw new CipherException("Key value '" + key[i] + "' is not relatively prime to '" + alphabetLength + "'");
+            }
         }
 
         return key;
@@ -36,14 +49,25 @@ public class Caesar implements Cipher {
 
     @Override
     public String encrypt(String message, String keyText) throws CipherException {
-        int key = validateKey(keyText);
+        int[] key = validateKey(keyText);
+        int messageLength = message.length();
+        message = message.toUpperCase();
+        int k0 = key[0];
+        int k1 = key[1];
 
-        return message;
+        Character[] result = new Character[messageLength];
+        int[] resultInt = new int[messageLength];
+
+//        for (int i = 0; i < result.length; i++) {
+//            resultInt[i] = 
+//        }
+
+        return Arrays.toString(key);
     }
 
     @Override
     public String decrypyt(String message, String keyText) throws CipherException {
-        int key = validateKey(keyText);
+        int[] key = validateKey(keyText);
 
         return message;
     }
@@ -60,7 +84,7 @@ public class Caesar implements Cipher {
 
     @Override
     public String getTemplateKey() {
-        return "3";
+        return "3,5";
     }
 
 }

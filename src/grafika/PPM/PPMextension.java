@@ -4,13 +4,11 @@ import grafika.exceptions.FileException;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,38 +27,34 @@ public class PPMextension extends FileType {
         try {
 //            byte[] array = Files.readAllBytes(new File(getFilePath()).toPath());
 //            reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(array)));
-            reader = new BufferedReader(new FileReader(getFilePath()));
-        } catch (FileNotFoundException ex) { 
+//            reader = new BufferedReader(new FileReader(getFilePath()));
+                reader = new BufferedReader(new InputStreamReader(new FileInputStream(getFilePath()),Charset.forName("ISO-8859-1")));
+        } catch (FileNotFoundException ex) {
             Logger.getLogger(PPMextension.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try {
             //zczytanie jaką metoda bedzie sie dekodowac
-            for (String currentLine; (currentLine = reader.readLine()) != null;) {
+            String currentLine;
+            while ((currentLine = reader.readLine()) != null) {
+                incrementLinesRead();
                 currentLine = currentLine.trim();
                 if (currentLine.length() == 0 || currentLine.charAt(0) == '#') {
                     continue;
                 } else if (currentLine.equals("P3")) {
                     ppmType = new P3();
+                    readP3();
                     break;
                 } else if (currentLine.equals("P6")) {
                     ppmType = new P6();
+                    readP6();
                     break;
                 }
-                throw new FileException("A file does not start with 'P6' nor 'P3'");
+                throw new FileException("A file does not start neither with 'P6' nor 'P3'");
             }
 
-            for (String currentLine; (currentLine = reader.readLine()) != null;) {
-                currentLine = currentLine.trim();
-                if (currentLine.length() == 0 || currentLine.charAt(0) == '#') {
-                    continue;
-                } else {
-                    ppmType.readLine(currentLine);
-                }
-            }
-
+            //jesli plik jest poprawny
             if (ppmType.getColumns() == ppmType.getCurrentColumnPixelRead() && ppmType.getRows() == ppmType.getCurrentRowPixelRead()) {
-                //jesli plik jest poprawny
 //                for (int i = 0; i < ppmType.getRows(); i++) {
 //                    for (int j = 0; j < ppmType.getColumns(); j++) {
 //                        System.out.print("[" + ppmType.getRedPixels()[i][j] + "," + ppmType.getGreenPixels()[i][j] + "," + ppmType.getBluePixels()[i][j] + "]");
@@ -91,6 +85,38 @@ public class PPMextension extends FileType {
             reader.close();
         } catch (IOException ex) {
             throw new FileException("Exception while closing the file \"" + getFilePath() + "\"");
+        }
+    }
+
+    private void readP3() throws IOException, FileException {
+        String currentLine;
+        while ((currentLine = reader.readLine()) != null) {
+            incrementLinesRead();
+            currentLine = currentLine.trim();
+            if (currentLine.length() == 0 || currentLine.charAt(0) == '#') {
+                continue;
+            } else {
+                ppmType.readLine(currentLine);
+            }
+        }
+    }
+
+    private void readP6() throws IOException, FileException {
+        String currentLine;
+        while (ppmType.getMaximumColorValue() == 0) {
+            currentLine = reader.readLine();
+            incrementLinesRead();
+            currentLine = currentLine.trim();
+            if (currentLine.length() != 0 && currentLine.charAt(0) != '#') {
+                ppmType.readLine(currentLine);
+            }
+        }
+        char[] foo = new char[5000];
+        while ((reader.read(foo)) != -1) {
+            ppmType.readLine(new String(foo));
+//            for (char f : foo) {
+//                System.out.println((int)f);
+//            }
         }
     }
 }

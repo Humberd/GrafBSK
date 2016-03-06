@@ -16,7 +16,7 @@ public abstract class PPMType {
     private boolean bluePixelsRead = false;
     private int currentColumnPixelRead = 0;
     private int currentRowPixelRead = 0;
-    private int maximumColorValue;
+    private int maximumColorValue = 0;
 
     public abstract void readLine(String line) throws FileException;
 

@@ -53,7 +53,7 @@ public class TemplatePanel extends JPanel {
     private JPanel resultPanel = new JPanel();
     private JPanel inputPanel = new JPanel();
     private JPanel actionPanel = new JPanel();
-    
+
     private Cipher cipher;
 
     public TemplatePanel(Cipher cipher) {
@@ -535,6 +535,10 @@ public class TemplatePanel extends JPanel {
 
     public void setDecryptButton(JButton decryptButton) {
         this.decryptButton = decryptButton;
+    }
+    
+    public JPanel getInputPanel() {
+        return inputPanel;
     }
 
 }

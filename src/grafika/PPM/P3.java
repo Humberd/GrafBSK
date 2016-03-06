@@ -9,7 +9,7 @@ public class P3 extends PPMType {
 
     public P3() {
         super();
-        super.setState(P3NotStarted.getInstance());
+        super.setState(P3ColumnReader.getInstance());
     }
 
     @Override
@@ -23,35 +23,29 @@ public class P3 extends PPMType {
     }
 }
 
-class P3NotStarted implements PPMState {
+class P3ColumnReader implements PPMState {
 
-    private static P3NotStarted instance = new P3NotStarted();
+    private static P3ColumnReader instance = new P3ColumnReader();
 
-    private P3NotStarted() {
+    private P3ColumnReader() {
 
     }
 
-    public static P3NotStarted getInstance() {
+    public static P3ColumnReader getInstance() {
         return instance;
     }
 
     @Override
     public void interpret(String line, PPMType source) throws FileException {
-//        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(line.getBytes()));
         Scanner scanner = new Scanner(line);
         if (scanner.hasNextInt()) {
             int cols = scanner.nextInt();
             if (cols > 0) {
                 source.setColumns(cols);
+                source.setState(P3RowReader.getInstance());
                 if (scanner.hasNextInt()) {
-                    int rows = scanner.nextInt();
-                    if (rows > 0) {
-                        source.setRows(rows);
-                    } else {
-                        throw new FileException("Rows number value is incorrect");
-                    }
-                } else {
-                    throw new FileException("Cannot read rows number value");
+                    line = line.replaceFirst(cols + "", "");
+                    source.readLine(line);
                 }
             } else {
                 throw new FileException("Columns number value is incorrect");
@@ -59,22 +53,54 @@ class P3NotStarted implements PPMState {
         } else {
             throw new FileException("Cannot read columns number value");
         }
-        source.setMinimumRGBsRead(source.getColumns() * source.getRows());
-        source.initializeRGBarrays(source.getColumns(), source.getRows());
-        source.setState(P3ColRowDone.getInstance());
     }
-
 }
 
-class P3ColRowDone implements PPMState {
+class P3RowReader implements PPMState {
 
-    private static P3ColRowDone instance = new P3ColRowDone();
+    private static P3RowReader instance = new P3RowReader();
 
-    private P3ColRowDone() {
+    private P3RowReader() {
 
     }
 
-    public static P3ColRowDone getInstance() {
+    public static P3RowReader getInstance() {
+        return instance;
+    }
+
+    @Override
+    public void interpret(String line, PPMType source) throws FileException {
+        Scanner scanner = new Scanner(line);
+
+        if (scanner.hasNextInt()) {
+            int rows = scanner.nextInt();
+            if (rows > 0) {
+                source.setRows(rows);
+                source.setMinimumRGBsRead(source.getColumns() * source.getRows());
+                source.initializeRGBarrays(source.getColumns(), source.getRows());
+                source.setState(P3MaxColorValueReader.getInstance());
+                if (scanner.hasNextInt()) {
+                    line = line.replaceFirst(rows + "", "");
+                    source.readLine(line);
+                }
+            } else {
+                throw new FileException("Rows number value is incorrect");
+            }
+        } else {
+            throw new FileException("Cannot read rows number value");
+        }
+    }
+}
+
+class P3MaxColorValueReader implements PPMState {
+
+    private static P3MaxColorValueReader instance = new P3MaxColorValueReader();
+
+    private P3MaxColorValueReader() {
+
+    }
+
+    public static P3MaxColorValueReader getInstance() {
         return instance;
     }
 
@@ -83,24 +109,31 @@ class P3ColRowDone implements PPMState {
         Scanner scanner = new Scanner(line);
         if (scanner.hasNextInt()) {
             int value = scanner.nextInt();
-            source.setMaximumColorValue(value);
+            if (value > 0) {
+                source.setMaximumColorValue(value);
+                source.setState(P3ColorReader.getInstance());
+                if (scanner.hasNextInt()) {
+                    line = line.replaceFirst(value + "", "");
+                    source.readLine(line);
+                }
+            } else {
+                throw new FileException("Maximum color value must be higher than 0");
+            }
         } else {
-            throw new FileException("Cannot read maximum color value number");
+            throw new FileException("Cannot read maximum color value");
         }
-        source.setState(P3MaxColorValueDone.getInstance());
     }
-
 }
 
-class P3MaxColorValueDone implements PPMState {
+class P3ColorReader implements PPMState {
 
-    private static P3MaxColorValueDone instance = new P3MaxColorValueDone();
+    private static P3ColorReader instance = new P3ColorReader();
 
-    private P3MaxColorValueDone() {
+    private P3ColorReader() {
 
     }
 
-    public static P3MaxColorValueDone getInstance() {
+    public static P3ColorReader getInstance() {
         return instance;
     }
 
@@ -108,9 +141,9 @@ class P3MaxColorValueDone implements PPMState {
     public void interpret(String line, PPMType source) throws FileException {
         Scanner scanner = new Scanner(line);
         //sprawdzam czy mam juz wszystkie pixele wypelnione
-        if (source.getCurrentColumnPixelRead() == source.getColumns() && source.getCurrentRowPixelRead() == source.getRows()) {
-            return;
-        }
+//        if (source.getCurrentColumnPixelRead() == source.getColumns() && source.getCurrentRowPixelRead() == source.getRows()) {
+//            return;
+//        }
         while (scanner.hasNextInt()) {
             int colorValue = scanner.nextInt();
             if (colorValue > source.getMaximumColorValue()) {
@@ -149,19 +182,28 @@ class P3MaxColorValueDone implements PPMState {
                     //maksymalny rozmiar tablicy przekroczony
                     source.setCurrentRowPixelRead(source.getRows());
                     source.setCurrentColumnPixelRead(source.getColumns());
+                    source.setState(P3ImageIsDone.getInstance());
                     break;
                 }
             }
         }
     }
-
 }
 
-class P3ContentDone implements PPMState {
+class P3ImageIsDone implements PPMState {
+
+    private static P3ImageIsDone instance = new P3ImageIsDone();
+
+    private P3ImageIsDone() {
+
+    }
+
+    public static P3ImageIsDone getInstance() {
+        return instance;
+    }
 
     @Override
-    public void interpret(String line, PPMType source) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void interpret(String line, PPMType source) throws FileException {
     }
 
 }

@@ -70,7 +70,7 @@ public class ImageWindow extends JPanel {
                 JFileChooser fileChooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("*.ppm", "ppm");
                 fileChooser.setFileFilter(filter);
-                fileChooser.setPreferredSize(new Dimension(500, 400));
+                fileChooser.setPreferredSize(new Dimension(500, 500));
                 int returnValue = fileChooser.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     if (openedFile != null) {
@@ -123,6 +123,6 @@ public class ImageWindow extends JPanel {
     }
     
     private void errorHandler(Exception ex) {
-        System.err.println(ex.getMessage());
+        System.err.println("Line ["+openedFile.getLinesRead()+"]: "+ex.getMessage());
     }
 }
