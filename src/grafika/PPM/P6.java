@@ -1,13 +1,7 @@
 package grafika.PPM;
 
 import grafika.exceptions.FileException;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.EOFException;
-import java.io.IOException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class P6 extends PPMType {
 

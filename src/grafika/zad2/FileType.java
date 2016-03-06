@@ -1,4 +1,4 @@
-package grafika.PPM;
+package grafika.zad2;
 
 import grafika.exceptions.FileException;
 import java.awt.image.BufferedImage;
@@ -21,6 +21,8 @@ public abstract class FileType {
     public abstract void openFile() throws FileException;
 
     public abstract void closeFile() throws FileException;
+    
+    public abstract void saveFile(BufferedImage image, String path) throws FileException;
 
     public static String getFileExtension() {
         return fileExtension;

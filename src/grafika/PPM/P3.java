@@ -1,8 +1,12 @@
 package grafika.PPM;
 
 import grafika.exceptions.FileException;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class P3 extends PPMType {
@@ -140,6 +144,8 @@ class P3ColorReader implements PPMState {
     @Override
     public void interpret(String line, PPMType source) throws FileException {
         Scanner scanner = new Scanner(line);
+        
+        
         //sprawdzam czy mam juz wszystkie pixele wypelnione
 //        if (source.getCurrentColumnPixelRead() == source.getColumns() && source.getCurrentRowPixelRead() == source.getRows()) {
 //            return;

@@ -1,5 +1,6 @@
 package grafika.PPM;
 
+import grafika.zad2.FileType;
 import grafika.exceptions.FileException;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -28,7 +29,7 @@ public class PPMextension extends FileType {
 //            byte[] array = Files.readAllBytes(new File(getFilePath()).toPath());
 //            reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(array)));
 //            reader = new BufferedReader(new FileReader(getFilePath()));
-                reader = new BufferedReader(new InputStreamReader(new FileInputStream(getFilePath()),Charset.forName("ISO-8859-1")));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(getFilePath()), Charset.forName("ISO-8859-1")));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PPMextension.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -74,6 +75,7 @@ public class PPMextension extends FileType {
             } else {
                 throw new FileException("Not enough color pixels");
             }
+            reader.close();
         } catch (IOException ex) {
             throw new FileException("Exception while reading from the file \"" + getFilePath() + "\"");
         }
@@ -88,14 +90,37 @@ public class PPMextension extends FileType {
         }
     }
 
+    @Override
+    public void saveFile(BufferedImage image, String Path) throws FileException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private void readP3() throws IOException, FileException {
         String currentLine;
+        int linesReadAtOnce = 500;
         while ((currentLine = reader.readLine()) != null) {
             incrementLinesRead();
             currentLine = currentLine.trim();
-            if (currentLine.length() == 0 || currentLine.charAt(0) == '#') {
-                continue;
-            } else {
+            if (!currentLine.isEmpty() && !currentLine.startsWith("#")) {
+                if (currentLine.contains("#")) {
+                    currentLine = currentLine.split("#", 2)[0];
+                }
+                String line = "";
+                //wrzucam kilkanascie linii z pliku do jednego stringa, zeby Scanner działał szybciej i pamięci tyle nie zużywał
+                for (int i = 0; i < linesReadAtOnce; i++) {
+                    if ((line = reader.readLine()) != null) {
+                        incrementLinesRead();
+                        line = line.trim();
+                        if (!line.isEmpty() && !line.startsWith("#")) {
+                            if (line.contains("#")) {
+                                line = line.split("#", 2)[0];
+                            }
+                            currentLine += " " + line;
+                        }
+                    } else {
+                        break;
+                    }
+                }
                 ppmType.readLine(currentLine);
             }
         }
@@ -107,7 +132,7 @@ public class PPMextension extends FileType {
             currentLine = reader.readLine();
             incrementLinesRead();
             currentLine = currentLine.trim();
-            if (currentLine.length() != 0 && currentLine.charAt(0) != '#') {
+            if (!currentLine.isEmpty() && !currentLine.startsWith("#")) {
                 ppmType.readLine(currentLine);
             }
         }

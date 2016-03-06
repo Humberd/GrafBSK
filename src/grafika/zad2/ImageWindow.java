@@ -1,22 +1,20 @@
 package grafika.zad2;
 
-import grafika.PPM.FileType;
+import grafika.JPEG.JPGextension;
 import grafika.PPM.PPMextension;
 import grafika.exceptions.FileException;
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.FileFilter;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -35,7 +33,7 @@ public class ImageWindow extends JPanel {
     private void addComponents() {
         setLayout(new GridBagLayout());
         addFileMenu();
-        
+
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.BOTH;
@@ -68,8 +66,9 @@ public class ImageWindow extends JPanel {
             @Override
             public void run() {
                 JFileChooser fileChooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("*.ppm", "ppm");
-                fileChooser.setFileFilter(filter);
+                setFilter("ppm", fileChooser);
+                setFilter("jpg", fileChooser);
+                fileChooser.setAcceptAllFileFilterUsed(false);
                 fileChooser.setPreferredSize(new Dimension(500, 500));
                 int returnValue = fileChooser.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -77,7 +76,7 @@ public class ImageWindow extends JPanel {
                         try {
                             openedFile.closeFile();
                         } catch (FileException ex) {
-                            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
+                            errorHandler(ex);
                         }
                     }
                     try {
@@ -93,6 +92,36 @@ public class ImageWindow extends JPanel {
 
         JMenuItem saveFileItem = new JMenuItem("Save");
         fileMenu.add(saveFileItem);
+        attachItem(saveFileItem, fileMenu, new Runnable() {
+            @Override
+            public void run() {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setPreferredSize(new Dimension(500, 500));
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.setApproveButtonText("Save");
+                fileChooser.setToolTipText("Save");
+                fileChooser.setDialogTitle("Save");
+//                setFilter("ppm", fileChooser);
+                setFilter("jpg", fileChooser);
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+//                    System.out.println(fileChooser.getFileFilter);
+                    if (openedFile != null) {
+                        try {
+                            FileNameExtensionFilter filter = (FileNameExtensionFilter) fileChooser.getFileFilter();
+                            FileType fileType = selectSaveClassByExtensionName(fileChooser.getSelectedFile().getAbsolutePath(), filter.getExtensions()[0]);
+                            fileType.saveFile(openedFile.getImage(), fileChooser.getSelectedFile().getAbsolutePath());
+                        } catch (FileException ex) {
+                            errorHandler(ex);
+                        }
+                    } else {
+                        //info o errorze
+                        errorHandler("Cannot save an empty image");
+                    }
+                }
+            }
+        });
     }
 
     private void attachItem(JMenuItem item, JMenu menu, Runnable runnable) {
@@ -116,13 +145,47 @@ public class ImageWindow extends JPanel {
             case "ppm":
                 openedFile = new PPMextension(filePath);
                 break;
+            case "jpg":
+                openedFile = new JPGextension(filePath);
+                break;
+            case "jpeg":
+                openedFile = new JPGextension(filePath);
+                break;
             default:
                 throw new FileException("No class can handle extension \"" + fileExtension + "\"");
         }
-
     }
-    
+
+    private FileType selectSaveClassByExtensionName(String path, String extensionName) throws FileException {
+        FileType fileType = null;
+        switch (extensionName) {
+            case "ppm":
+                fileType = new PPMextension(path);
+                break;
+            case "jpg":
+                fileType = new JPGextension(path);
+                break;
+            case "jpeg":
+                fileType = new JPGextension(path);
+                break;
+            default:
+                throw new FileException("No class can handle extension \"" + extensionName + "\"");
+        }
+        return fileType;
+    }
+
+    private void setFilter(String filterName, JFileChooser chooser) {
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*." + filterName, filterName);
+        chooser.addChoosableFileFilter(filter);
+//        chooser.setFileFilter(filter);
+    }
+
+    private void errorHandler(String text) {
+        JOptionPane.showMessageDialog(this, text,"Error",JOptionPane.ERROR_MESSAGE);
+        System.err.println(text);
+    }
+
     private void errorHandler(Exception ex) {
-        System.err.println("Line ["+openedFile.getLinesRead()+"]: "+ex.getMessage());
+        errorHandler("Line < = [" + openedFile.getLinesRead() + "]: " + ex.getMessage());
     }
 }
