@@ -1,7 +1,6 @@
 package bsk.szyfrowanie1;
 
 import bsk.exceptions.CipherException;
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class MatrixTransposition3 implements Cipher {

@@ -1,0 +1,4 @@
+W lewym górnym rogu znajduje się przycisk opcji "File", po którego kliknięciu mamy możliwość wyboru opcji otwarcia "Open", lub zapisania "Save" obrazu.
+Program umożliwia otwieranie plików PPM P3, PPM P6 oraz JPG.
+Program umożliwia zapisanie obrazu do pliku o rozszerzeniu JPG wraz z wyborem stopnia kompresji.
+W razie wystąpienie błędu pojawi się komunikat, co poszło nie tak
