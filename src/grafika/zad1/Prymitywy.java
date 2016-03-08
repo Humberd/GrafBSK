@@ -1,5 +1,10 @@
 package grafika.zad1;
 
+import grafika.zad1.colorPicker.ColorPicker;
+import grafika.zad1.transformacje.Translate;
+import grafika.zad1.figury.Rectangle;
+import grafika.zad1.figury.Line;
+import grafika.zad1.figury.Circle;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -11,6 +16,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -23,6 +29,7 @@ public class Prymitywy extends JPanel {
     private JPanel buttonsPanel;
     private JPanel figurePanel;
     private JPanel modifyPanel;
+    private JPanel colorPanel = new JPanel();
 
     private JLabel startXInputLabel = new JLabel("Start X");
     private JLabel startYInputLabel = new JLabel("Start Y");
@@ -57,14 +64,31 @@ public class Prymitywy extends JPanel {
         add(buttonsPanel, BorderLayout.SOUTH);
         add(editPanel, BorderLayout.WEST);
         addEditPanel();
-        buttonsPanel.setLayout(new BorderLayout());
-        buttonsPanel.add(figurePanel, BorderLayout.WEST);
-        buttonsPanel.add(modifyPanel, BorderLayout.EAST);
+        buttonsPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.LINE_START;
+        c.weightx = 0.5;
+        c.weighty = 0.5;
+        c.gridx = 0;
+        c.gridy = 0;
+        buttonsPanel.add(figurePanel, c);
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridx = 1;
+        c.gridy = 0;
+        buttonsPanel.add(colorPanel, c);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.gridx = 2;
+        c.gridy = 0;
+        buttonsPanel.add(modifyPanel, c);
 
         TitledBorder title;
         title = BorderFactory.createTitledBorder("Shapes");
         title.setTitleJustification(TitledBorder.CENTER);
         figurePanel.setBorder(title);
+
+        title = BorderFactory.createTitledBorder("Colors");
+        title.setTitleJustification(TitledBorder.CENTER);
+        colorPanel.setBorder(title);
 
         title = BorderFactory.createTitledBorder("Modifications");
         title.setTitleJustification(TitledBorder.CENTER);
@@ -105,6 +129,16 @@ public class Prymitywy extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 drawingPanel.setInEditMode(!drawingPanel.isInEditMode());
                 setInEditMode(drawingPanel.isInEditMode());
+            }
+        });
+
+        JButton colorPickerButton = addButton("Color picker", colorPanel, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(ColorPicker.pickAColor());
+                if (false) {
+                    System.out.println(JColorChooser.showDialog(null, "dupa", Color.yellow));
+                }
             }
         });
         ////////////////////////////////////////////////
@@ -180,7 +214,7 @@ public class Prymitywy extends JPanel {
         translateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               drawingPanel.setTransformation(new Translate());
+                drawingPanel.setTransformation(new Translate());
             }
         });
         rotateButton.addActionListener(new ActionListener() {

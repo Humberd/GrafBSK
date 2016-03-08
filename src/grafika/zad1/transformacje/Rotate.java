@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package grafika.zad1;
+package grafika.zad1.transformacje;
 
+import grafika.zad1.transformacje.Transformation;
+import grafika.zad1.figury.DrawingClass;
 import java.awt.Graphics2D;
 
 /**

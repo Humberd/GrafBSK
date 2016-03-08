@@ -1,5 +1,8 @@
 package grafika.zad1;
 
+import grafika.zad1.transformacje.Transformation;
+import grafika.zad1.figury.DrawingClass;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -25,6 +28,8 @@ public class DrawingPanel extends JPanel {
     private boolean inTranslateMode = false;
     private boolean inRotateMode = false;
     private boolean inScaleMode = false;
+    
+    private Color selectedColor;
 
     public DrawingPanel(Prymitywy prymitywy) {
         super();
@@ -39,11 +44,15 @@ public class DrawingPanel extends JPanel {
         c.anchor = GridBagConstraints.NORTHEAST;
         c.weightx = 0.1;
         c.weighty = 0.1;
+        c.gridx = 1;
+        c.gridy = 0;
         c.ipadx = 3;
         editModeLabel.setOpaque(true);
         editModeLabel.setVisible(false);
         add(editModeLabel, c);
         c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridx = 0;
+        c.gridy = 0;
         transformationModeLabel.setOpaque(true);
         transformationModeLabel.setVisible(false);
         add(transformationModeLabel, c);
@@ -78,6 +87,14 @@ public class DrawingPanel extends JPanel {
         currentDrawing.setCurrentX(endX);
         currentDrawing.setCurrentY(endY);
         repaint();
+    }
+
+    public Color getSelectedColor() {
+        return selectedColor;
+    }
+
+    public void setSelectedColor(Color selectedColor) {
+        this.selectedColor = selectedColor;
     }
 
     private class MyAdapter extends MouseAdapter {
@@ -221,7 +238,7 @@ public class DrawingPanel extends JPanel {
     }
 
     public void pushNewDrawing() {
-        pushNewDrawing(currentDrawingTemplate.getNewInstance());
+        pushNewDrawing(currentDrawingTemplate.getNewInstance(selectedColor));
     }
 
     public void pushNewDrawing(DrawingClass drawingClass) {

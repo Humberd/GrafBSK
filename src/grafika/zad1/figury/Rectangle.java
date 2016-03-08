@@ -3,28 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package grafika.zad1;
+package grafika.zad1.figury;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
 
 /**
  *
  * @author Sawik
  */
-public class Circle extends DrawingClass {
-
-    private static Circle circle = new Circle();
-
-    public Circle() {
+public class Rectangle extends DrawingClass{
+    
+    public Rectangle() {
+        super();
     }
-
-    public static Circle getInstance() {
-        return circle;
+    
+    public Rectangle(Color color) {
+        super(color);
     }
 
     @Override
-    public void draw(Graphics2D g2) {
+    public void drawShape(Graphics2D g2) {
         int diffx = getCurrentX() - getStartX();
         int diffy = getCurrentY() - getStartY();
         int begx = getStartX();
@@ -37,11 +36,13 @@ public class Circle extends DrawingClass {
             begy = getCurrentY();
             diffy = getStartY() - getCurrentY();
         }
-        g2.drawOval(begx, begy, diffx, diffy);
+//        System.out.println("RECTANGLE: "+begx + ", " + begy + " | " + diffx + ", " + diffy);
+
+        g2.drawRect(begx, begy, diffx, diffy);
     }
 
     @Override
-    public DrawingClass getNewInstance() {
-        return new Circle();
+    public DrawingClass getNewInstance(Color color) {
+        return new Rectangle(color);
     }
 }

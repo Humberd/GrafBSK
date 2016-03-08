@@ -1,7 +1,6 @@
 package grafikakomputerowa;
 
 import bsk.szyfrowanie1.Caesar;
-import bsk.szyfrowanie1.CaesarPanel;
 import bsk.szyfrowanie1.MatrixTransposition1;
 import bsk.szyfrowanie1.MatrixTransposition2;
 import bsk.szyfrowanie1.MatrixTransposition3;
@@ -9,16 +8,17 @@ import bsk.szyfrowanie1.RailFence;
 import grafika.zad1.Prymitywy;
 import grafika.zad2.ImageWindow;
 import bsk.szyfrowanie1.TemplatePanel;
+import grafika.zad1.colorPicker.ColorPicker;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.*;
+import test.Test;
 
 public class MyFrame extends JFrame {
 
@@ -26,6 +26,7 @@ public class MyFrame extends JFrame {
     private Container frameContainer;
     private Map<JMenuItem, JPanel> programsMap = new LinkedHashMap<>();
     private Map<JMenuItem, JPanel> bskZad1Map = new LinkedHashMap<>();
+    private Map<JMenuItem, JPanel> testMap = new LinkedHashMap<>();
 
     public MyFrame() {
         super("Grafika Komputerowa");
@@ -36,6 +37,7 @@ public class MyFrame extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+        System.out.println(ColorPicker.pickAColor());
     }
 
     private void addComponents() {
@@ -56,7 +58,7 @@ public class MyFrame extends JFrame {
             }
 
         });
-        menuItem = addMenuItem(true, new JMenuItem("2. PPM"), new ImageWindow(), programsMap, new Runnable() {
+        menuItem = addMenuItem(false, new JMenuItem("2. PPM"), new ImageWindow(), programsMap, new Runnable() {
             @Override
             public void run() {
                 System.out.println("22222");
@@ -66,6 +68,7 @@ public class MyFrame extends JFrame {
         //////////////////////////////////
         JMenu menu2 = new JMenu("Web Security");
         JMenu menu2Zad1 = new JMenu("1. Transposition");
+        menu2.add(menu2Zad1);
 
         JMenuItem menuItem2 = addMenuItem(false, new JMenuItem("1. Rail Fence"), new TemplatePanel(new RailFence()), bskZad1Map, new Runnable() {
             @Override
@@ -81,36 +84,45 @@ public class MyFrame extends JFrame {
             }
 
         });
-        
+
         menuItem2 = addMenuItem(false, new JMenuItem("3. Matrix Transposition (2b)"), new TemplatePanel(new MatrixTransposition2()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 2");
             }
         });
-        
+
         menuItem2 = addMenuItem(false, new JMenuItem("4. Matrix Transposition (2c)"), new TemplatePanel(new MatrixTransposition3()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 3");
             }
         });
-        
-        menuItem2= addMenuItem(false, new JMenuItem("5. Caesar"), new TemplatePanel(new Caesar()), bskZad1Map, new Runnable() {
+
+        menuItem2 = addMenuItem(false, new JMenuItem("5. Caesar"), new TemplatePanel(new Caesar()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Caesar");
             }
         });
 
-        menu2.add(menu2Zad1);
+        JMenu menu3 = new JMenu("Test");
+        
+        JMenuItem menuItem3 = addMenuItem(false, new JMenuItem("ObserverTest"), new Test(), testMap, new Runnable() {
+            @Override
+            public void run() {
+                
+            }
+        });
         //////////////////////////////////
         //dolaczam wrzystkie rzeczy do menu
         attachMenuItems(programsMap, menu);
         attachMenuItems(bskZad1Map, menu2Zad1);
+        attachMenuItems(testMap, menu3);
         //dolaczam menu do menuBar
         menuBar.add(menu);
         menuBar.add(menu2);
+        menuBar.add(menu3);
         //ustawiam menuBar
         setJMenuBar(menuBar);
     }
