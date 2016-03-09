@@ -26,14 +26,14 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.colorchooser.ColorChooserComponentFactory;
 import sun.swing.SwingUtilities2;
 
 public class ColorPicker {
 
     public static Color pickAColor() {
         JColorChooser pane = new JColorChooser(Color.BLUE);
-        JDialog dialog = new ColorChooserDialog(pane);
+        ColorPickerPanel colorPanel = new ColorPickerPanel();
+        JDialog dialog = new ColorChooserDialog(colorPanel);
         dialog.setVisible(true);
 
         return Color.black;
@@ -58,7 +58,7 @@ class ColorChooserDialog extends JDialog {
 
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
-//        contentPane.add(chooserPane, BorderLayout.CENTER);
+        contentPane.add(chooserPane, BorderLayout.CENTER);
 
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
