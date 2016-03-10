@@ -6,7 +6,9 @@
         </handlers>
         <httpPlatform processPath="d:\home\site\wwwroot\go\bin\go.exe" 
                       arguments="run d:\home\site\server.go" 
-                      startupTimeLimit="60">
+                      startupTimeLimit="60"
+                        stdoutLogEnabled="true"
+                        stdoutLogFile="d\home\site\log.txt">
             <environmentVariables>
               <environmentVariable name="GOROOT" value="d:\home\site\wwwroot\go" />
             </environmentVariables>
