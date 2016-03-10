@@ -8,7 +8,7 @@
                       arguments="run d:\home\site\repository\server.go" 
                       startupTimeLimit="60"
                       stdoutLogEnabled="true"
-                      stdoutLogFile="d:\home\site\logs\log.txt">
+                       stdoutLogFile="d:\home\site\logs\log.txt">
             <environmentVariables>
               <environmentVariable name="GOROOT" value="d:\home\site\wwwroot\go" />
             </environmentVariables>
