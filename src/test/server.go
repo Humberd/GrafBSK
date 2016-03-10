@@ -2,8 +2,9 @@ package main
 
 import (
 	"net/http"
-	"devtools.wi.pb.edu.pl/bitbucket/scm/vil/vilib1/handlers"
+	"/handlers"
 	"log"
+        "os"
 )
 
 func main() {
