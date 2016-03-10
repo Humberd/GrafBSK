@@ -11,6 +11,7 @@
                        stdoutLogFile="d:\home\site\logs\log.txt">
             <environmentVariables>
               <environmentVariable name="GOROOT" value="d:\home\site\wwwroot\go" />
+              <environmentVariable name="GOPATH" valut="d:\home\site\repository" />
             </environmentVariables>
         </httpPlatform>
     </system.webServer>
