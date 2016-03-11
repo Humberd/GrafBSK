@@ -30,10 +30,10 @@ public class ColorPickerPanel extends JPanel {
         add(slidersPanel);
 
         tabsPanel.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabsPanel.setPreferredSize(new Dimension(200, 200));
+        tabsPanel.setPreferredSize(new Dimension(320, 300));
 //        tabsPanel.setTabPlacement(JTabbedPane.BOTTOM);
-        tabsPanel.addTab("RGB", rgbPanel);
         tabsPanel.addTab("HSV", hsvPanel);
+        tabsPanel.addTab("RGB", rgbPanel);
 
         slidersPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

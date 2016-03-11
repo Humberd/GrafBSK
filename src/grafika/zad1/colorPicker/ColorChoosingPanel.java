@@ -1,8 +1,12 @@
 package grafika.zad1.colorPicker;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import javax.swing.JPanel;
 
 public abstract class ColorChoosingPanel extends JPanel {
+
+    private PropertyChangeSupport pcs;
 
     private int maxColor1Value;
     private int maxColor2Value;
@@ -129,4 +133,25 @@ public abstract class ColorChoosingPanel extends JPanel {
         this.currentColor4Value = currentColor4Value;
     }
 
+    public PropertyChangeSupport getPcs() {
+        return pcs;
+    }
+
+    public void setPcs(PropertyChangeSupport pcs) {
+        if (this.pcs == null) {
+            this.pcs = pcs;
+        }
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        if (pcs != null) {
+            this.pcs.addPropertyChangeListener(listener);
+        }
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        if (pcs != null) {
+            this.pcs.removePropertyChangeListener(listener);
+        }
+    }
 }

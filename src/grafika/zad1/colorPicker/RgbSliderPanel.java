@@ -1,9 +1,13 @@
 package grafika.zad1.colorPicker;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.LinkedHashMap;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -45,7 +49,7 @@ public class RgbSliderPanel extends ColorSliderPanel {
         getBindingGroup().addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, blueSlider, BeanProperty.create("value"), colorPanel, BeanProperty.create("blue"));
         getBindingGroup().addBinding(binding);
-        
+
         super.setSlidersMap(map);
         super.addComponents();
 

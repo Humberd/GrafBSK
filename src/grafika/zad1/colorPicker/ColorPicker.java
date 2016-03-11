@@ -63,15 +63,15 @@ class ColorChooserDialog extends JDialog {
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
         JButton okButton = new JButton(okString);
-        getRootPane().setDefaultButton(okButton);
+//        getRootPane().setDefaultButton(okButton);
         okButton.getAccessibleContext().setAccessibleDescription(okString);
         okButton.setActionCommand("OK");
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        });
+//        okButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                setVisible(false);
+//            }
+//        });
         buttonPane.add(okButton);
 
         cancelButton = new JButton(cancelString);

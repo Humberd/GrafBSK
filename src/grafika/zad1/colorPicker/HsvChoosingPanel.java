@@ -1,9 +1,13 @@
 package grafika.zad1.colorPicker;
 
+import java.awt.Color;
+import javax.swing.JColorChooser;
+
 public class HsvChoosingPanel extends ColorChoosingPanel{
 
     public HsvChoosingPanel() {
         super(360, 255, 255);
+        JColorChooser.showDialog(null, "ok", Color.yellow);
     }
     
     public int getHue() {
