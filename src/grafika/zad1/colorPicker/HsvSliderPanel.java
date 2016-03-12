@@ -36,7 +36,7 @@ public class HsvSliderPanel extends ColorSliderPanel{
         
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, hueSlider, BeanProperty.create("value"), colorPanel, BeanProperty.create("hue"));
         getBindingGroup().addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, saturationSlider, BeanProperty.create("value"), colorPanel, BeanProperty.create("sauration"));
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, saturationSlider, BeanProperty.create("value"), colorPanel, BeanProperty.create("saturation"));
         getBindingGroup().addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, valueSlider, BeanProperty.create("value"), colorPanel, BeanProperty.create("value"));
         getBindingGroup().addBinding(binding);

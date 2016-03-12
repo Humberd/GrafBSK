@@ -1,13 +1,17 @@
 package grafika.zad1.colorPicker;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Binding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.ELProperty;
 
 public class ColorPickerPanel extends JPanel {
 
@@ -18,9 +22,36 @@ public class ColorPickerPanel extends JPanel {
     private HsvChoosingPanel hsvPanel = new HsvChoosingPanel();
     private CmykChoosingPanel cmykPanel = new CmykChoosingPanel();
 
+    private ColorConverter converter = new ColorConverter();
+
     public ColorPickerPanel() {
         super();
+        converter.setRgbPanel(rgbPanel);
+        converter.setHsvPanel(hsvPanel);
+        converter.setCmykPanel(cmykPanel);
+        rgbPanel.setConverter(converter);
+//        hsvPanel.setConverter(converter);
+        cmykPanel.setConverter(converter);
+        
         addComponents();
+
+//        bindPanels();
+    }
+
+    @Deprecated
+    private void bindPanels() {
+        BindingGroup group = new BindingGroup();
+        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, rgbPanel, ELProperty.create("${cyan}"), cmykPanel, BeanProperty.create("cyan"));
+        group.addBinding(binding);
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, rgbPanel, ELProperty.create("${magneta}"), cmykPanel, BeanProperty.create("magneta"));
+        group.addBinding(binding);
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, rgbPanel, ELProperty.create("${yellow}"), cmykPanel, BeanProperty.create("yellow"));
+        group.addBinding(binding);
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, rgbPanel, ELProperty.create("${black}"), cmykPanel, BeanProperty.create("black"));
+        group.addBinding(binding);
+        group.bind();
+//        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ, cmykPanel, BeanProperty.create("red"), rgbPanel, BeanProperty.create("red"));
+//        binding.bind();
     }
 
     private void addComponents() {
@@ -30,10 +61,10 @@ public class ColorPickerPanel extends JPanel {
         add(slidersPanel);
 
         tabsPanel.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabsPanel.setPreferredSize(new Dimension(320, 300));
+        tabsPanel.setPreferredSize(new Dimension(320, 400));
 //        tabsPanel.setTabPlacement(JTabbedPane.BOTTOM);
-        tabsPanel.addTab("HSV", hsvPanel);
         tabsPanel.addTab("RGB", rgbPanel);
+        tabsPanel.addTab("HSV", hsvPanel);
 
         slidersPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

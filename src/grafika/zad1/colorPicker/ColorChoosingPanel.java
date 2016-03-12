@@ -7,7 +7,9 @@ import javax.swing.JPanel;
 public abstract class ColorChoosingPanel extends JPanel {
 
     private PropertyChangeSupport pcs;
-
+    
+    private ColorConverter converter;
+    
     private int maxColor1Value;
     private int maxColor2Value;
     private int maxColor3Value;
@@ -153,5 +155,13 @@ public abstract class ColorChoosingPanel extends JPanel {
         if (pcs != null) {
             this.pcs.removePropertyChangeListener(listener);
         }
+    }
+
+    public ColorConverter getConverter() {
+        return converter;
+    }
+
+    public void setConverter(ColorConverter converter) {
+        this.converter = converter;
     }
 }

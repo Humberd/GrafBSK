@@ -3,14 +3,14 @@ package grafika.zad1.colorPicker;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import javax.swing.JPanel;
 
@@ -33,9 +33,11 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
     }
 
     private void addComponents() {
-        setLayout(new FlowLayout());
-        add(matrixPanel);
-        add(sliderPanel);
+        setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.ipadx = 10;
+        add(matrixPanel, c);
+        add(sliderPanel, c);
 
         matrixPanel.refresh();
         sliderPanel.refresh();
@@ -71,7 +73,6 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     update(e);
-                    System.out.println(getBlue());
                 }
 
                 @Override
@@ -167,9 +168,17 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
     }
 
     public void setRed(int red) {
+        setRedConverter(red, true);
+//        fireConversionPropertyChange();
+    }
+    
+    public void setRedConverter(int red, boolean converter) {
+        if (converter) {
+            getConverter().rgbToCmyk();
+        }
         getPcs().firePropertyChange("red", red - 1, red);
         matrixPanel.refresh();
-        sliderPanel.refresh();
+        sliderPanel.repaint();
         setCurrentColor1Value(red);
     }
 
@@ -178,9 +187,17 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
     }
 
     public void setGreen(int green) {
+        setGreenConverter(green, true);
+    }
+    
+    public void setGreenConverter(int green, boolean converter) {
+        if (converter) {
+            getConverter().rgbToCmyk();
+        }
         getPcs().firePropertyChange("green", green - 1, green);
         setCurrentColor2Value(green);
         matrixPanel.repaint();
+//        fireConversionPropertyChange();
     }
 
     public int getBlue() {
@@ -188,9 +205,17 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
     }
 
     public void setBlue(int blue) {
+        setBlueConverter(blue, true);
+    }
+    
+    public void setBlueConverter(int blue, boolean converter) {
+        if (converter) {
+            getConverter().rgbToCmyk();
+        }
         getPcs().firePropertyChange("blue", blue - 1, blue);
         setCurrentColor3Value(blue);
         matrixPanel.repaint();
+//        fireConversionPropertyChange();
     }
 
     public int getMaxRed() {
@@ -217,4 +242,39 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
         return getDefaultColor3Value();
     }
 
+    private void fireConversionPropertyChange() {
+        float red = (float) getRed() / getMaxRed();
+        float green = (float) getGreen() / getMaxGreen();
+        float blue = (float) getBlue() / getMaxBlue();
+        float black = min(1 - red, 1 - green, 1 - blue);
+        float cyan = (1 - red - black) / (1 - black);
+        float magneta = (1 - green - black) / (1 - black);
+        float yellow = (1 - blue - black) / (1 - black);
+//        System.out.print("[" + getRed() + ", " + getGreen() + ", " + getBlue() + "] ->");
+//        System.out.print("[" + cyan + ", " + magneta + ", " + yellow + ", " + black + "]");
+//        System.out.println("");
+        if (black == 1) {
+            cyan = 0;
+            magneta = 0;
+            yellow = 0;
+            black = 100;
+        } else {
+            cyan *= 100;
+            magneta *= 100;
+            yellow *= 100;
+            black *= 100;
+        }
+        getPcs().firePropertyChange("cyan", cyan - 1, cyan);
+        getPcs().firePropertyChange("magneta", magneta - 1, magneta);
+        getPcs().firePropertyChange("yellow", yellow - 1, yellow);
+        getPcs().firePropertyChange("black", black - 1, black);
+    }
+
+    private float min(float a, float b, float c) {
+        return min(min(a, b), c);
+    }
+
+    private float min(float a, float b) {
+        return a < b ? a : b;
+    }
 }
