@@ -10,6 +10,8 @@ public abstract class ColorChoosingPanel extends JPanel {
     
     private ColorConverter converter;
     
+    private JPanel colorPreview;
+    
     private int maxColor1Value;
     private int maxColor2Value;
     private int maxColor3Value;
@@ -163,5 +165,13 @@ public abstract class ColorChoosingPanel extends JPanel {
 
     public void setConverter(ColorConverter converter) {
         this.converter = converter;
+    }
+
+    public JPanel getColorPreview() {
+        return colorPreview;
+    }
+
+    public void setColorPreview(JPanel colorPreview) {
+        this.colorPreview = colorPreview;
     }
 }

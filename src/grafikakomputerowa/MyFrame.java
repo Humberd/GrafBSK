@@ -8,7 +8,6 @@ import bsk.szyfrowanie1.RailFence;
 import grafika.zad1.Prymitywy;
 import grafika.zad2.ImageWindow;
 import bsk.szyfrowanie1.TemplatePanel;
-import grafika.zad1.colorPicker.ColorPicker;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +36,6 @@ public class MyFrame extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        System.out.println(ColorPicker.pickAColor());
     }
 
     private void addComponents() {

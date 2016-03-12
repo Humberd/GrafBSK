@@ -61,7 +61,7 @@ public class ColorPickerPanel extends JPanel {
         add(slidersPanel);
 
         tabsPanel.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabsPanel.setPreferredSize(new Dimension(320, 400));
+        tabsPanel.setPreferredSize(new Dimension(400, 400));
 //        tabsPanel.setTabPlacement(JTabbedPane.BOTTOM);
         tabsPanel.addTab("RGB", rgbPanel);
         tabsPanel.addTab("HSV", hsvPanel);
@@ -80,6 +80,14 @@ public class ColorPickerPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 2;
         slidersPanel.add(new CmykSliderPanel(cmykPanel), c);
+    }
+
+    public JTabbedPane getTabsPanel() {
+        return tabsPanel;
+    }
+
+    public void setTabsPanel(JTabbedPane tabsPanel) {
+        this.tabsPanel = tabsPanel;
     }
 
 }

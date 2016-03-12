@@ -57,6 +57,7 @@ public class Prymitywy extends JPanel {
         setName("jestem prymitywem");
         addComponents();
         addInputListeners();
+        ColorPicker.setPanel(drawingPanel);
     }
 
     private void addComponents() {
@@ -135,10 +136,7 @@ public class Prymitywy extends JPanel {
         JButton colorPickerButton = addButton("Color picker", colorPanel, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(ColorPicker.pickAColor());
-                if (false) {
-                    System.out.println(JColorChooser.showDialog(null, "dupa", Color.yellow));
-                }
+                ColorPicker.pickAColor();
             }
         });
         ////////////////////////////////////////////////

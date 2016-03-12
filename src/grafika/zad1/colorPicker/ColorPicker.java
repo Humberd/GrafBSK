@@ -1,5 +1,6 @@
 package grafika.zad1.colorPicker;
 
+import grafika.zad1.DrawingPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -19,7 +20,6 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -30,22 +30,33 @@ import sun.swing.SwingUtilities2;
 
 public class ColorPicker {
 
-    public static Color pickAColor() {
-        JColorChooser pane = new JColorChooser(Color.BLUE);
+    private static DrawingPanel panel;
+    
+    public static void pickAColor() {
         ColorPickerPanel colorPanel = new ColorPickerPanel();
         JDialog dialog = new ColorChooserDialog(colorPanel);
         dialog.setVisible(true);
+    }
 
-        return Color.black;
+    public static DrawingPanel getPanel() {
+        return panel;
+    }
+
+    public static void setPanel(DrawingPanel aPanel) {
+        panel = aPanel;
+    }
+
+    public static void setColor(Color color) {
+        panel.setSelectedColor(color);
     }
 }
 
 class ColorChooserDialog extends JDialog {
 
-    private JComponent chooserPane;
+    private ColorPickerPanel chooserPane;
     private JButton cancelButton;
 
-    public ColorChooserDialog(JComponent pane) {
+    public ColorChooserDialog(ColorPickerPanel pane) {
         this.chooserPane = pane;
         initColorChooserDialog();
     }
@@ -66,12 +77,14 @@ class ColorChooserDialog extends JDialog {
 //        getRootPane().setDefaultButton(okButton);
         okButton.getAccessibleContext().setAccessibleDescription(okString);
         okButton.setActionCommand("OK");
-//        okButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                setVisible(false);
-//            }
-//        });
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                ColorChoosingPanel foo = (ColorChoosingPanel) chooserPane.getTabsPanel().getSelectedComponent();
+                ColorPicker.setColor(foo.getColorPreview().getBackground());
+            }
+        });
         buttonPane.add(okButton);
 
         cancelButton = new JButton(cancelString);
@@ -114,7 +127,7 @@ class ColorChooserDialog extends JDialog {
         if (mnemonic != -1) {
             resetButton.setMnemonic(mnemonic);
         }
-        buttonPane.add(resetButton);
+//        buttonPane.add(resetButton);
         contentPane.add(buttonPane, BorderLayout.SOUTH);
         
         try {

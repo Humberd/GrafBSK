@@ -28,6 +28,9 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
         slider = new BufferedImage(30, 256, BufferedImage.TYPE_INT_RGB);
         matrixPanel = new MatrixPanel();
         sliderPanel = new SliderPanel();
+        setColorPreview(new JPanel());
+        getColorPreview().setLayout(null);
+        getColorPreview().setPreferredSize(new Dimension(60, 40));
 //        setBackground(Color.red);
         addComponents();
     }
@@ -38,6 +41,7 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
         c.ipadx = 10;
         add(matrixPanel, c);
         add(sliderPanel, c);
+        add(getColorPreview(), c);
 
         matrixPanel.refresh();
         sliderPanel.refresh();
@@ -93,6 +97,7 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
             g2.setStroke(stroke);
             g2.setColor(Color.BLACK);
             g2.drawOval(getBlue() - 7, getGreen() - 7, 14, 14);
+            getColorPreview().setBackground(new Color(getRed(), getGreen(), getBlue()));
 
         }
 
@@ -171,7 +176,7 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
         setRedConverter(red, true);
 //        fireConversionPropertyChange();
     }
-    
+
     public void setRedConverter(int red, boolean converter) {
         if (converter) {
             getConverter().rgbToCmyk();
@@ -189,7 +194,7 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
     public void setGreen(int green) {
         setGreenConverter(green, true);
     }
-    
+
     public void setGreenConverter(int green, boolean converter) {
         if (converter) {
             getConverter().rgbToCmyk();
@@ -207,7 +212,7 @@ public class RgbChoosingPanel extends ColorChoosingPanel {
     public void setBlue(int blue) {
         setBlueConverter(blue, true);
     }
-    
+
     public void setBlueConverter(int blue, boolean converter) {
         if (converter) {
             getConverter().rgbToCmyk();

@@ -3,7 +3,6 @@ package grafika.zad1.colorPicker;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -13,8 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeSupport;
-import javax.swing.JColorChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class HsvChoosingPanel extends ColorChoosingPanel {
@@ -31,6 +28,9 @@ public class HsvChoosingPanel extends ColorChoosingPanel {
         slider = new BufferedImage(30, 360, BufferedImage.TYPE_INT_RGB);
         matrixPanel = new MatrixPanel();
         sliderPanel = new SliderPanel();
+        setColorPreview(new JPanel());
+        getColorPreview().setLayout(null);
+        getColorPreview().setPreferredSize(new Dimension(60, 40));
         addComponents();
     }
 
@@ -40,11 +40,11 @@ public class HsvChoosingPanel extends ColorChoosingPanel {
         c.ipadx = 10;
         add(matrixPanel, c);
         add(sliderPanel, c);
+        add(getColorPreview(), c);
 
         matrixPanel.refresh();
         sliderPanel.refresh();
     }
-
     private class MatrixPanel extends JPanel {
 
         private Stroke stroke = new BasicStroke(2);
@@ -95,6 +95,7 @@ public class HsvChoosingPanel extends ColorChoosingPanel {
             g2.setStroke(stroke);
             g2.setColor(Color.BLACK);
             g2.drawOval(getValue() - 7, getSaturation() - 7, 14, 14);
+            getColorPreview().setBackground(new Color(Color.HSBtoRGB((float) getHue() / getMaxHue(), (float) getSaturation() / getMaxSaturation(), (float) getValue() / getMaxValue())));
 
         }
 
