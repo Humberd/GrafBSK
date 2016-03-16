@@ -112,8 +112,8 @@ public class MatrixTransposition2 implements Cipher {
 
     @Override
     public String getTemplateMessage() {
-//        return "HERE IS A SECRET MESSAGE ENCIPHERED BY TRANSPOSITION";
-        return "HEREISASECRETMESSAGEENCIPHEREDBYTRANSPOSITION";
+        return "HERE IS A SECRET MESSAGE ENCIPHERED BY TRANSPOSITION";
+//        return "HEREISASECRETMESSAGEENCIPHEREDBYTRANSPOSITION";
     }
 
     @Override

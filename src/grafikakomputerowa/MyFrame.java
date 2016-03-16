@@ -50,7 +50,7 @@ public class MyFrame extends JFrame {
     private void addMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Computer Graphics");
-        JMenuItem menuItem = addMenuItem(true, new JMenuItem("1. Prymitywy"), new Prymitywy(), programsMap, new Runnable() {
+        JMenuItem menuItem = addMenuItem(false, new JMenuItem("1. Prymitywy"), new Prymitywy(), programsMap, new Runnable() {
             @Override
             public void run() {
                 System.out.println("11111");
@@ -69,7 +69,7 @@ public class MyFrame extends JFrame {
         JMenu menu2Zad1 = new JMenu("1. Transposition");
         menu2.add(menu2Zad1);
 
-        JMenuItem menuItem2 = addMenuItem(false, new JMenuItem("1. Rail Fence"), new TemplatePanel(new RailFence()), bskZad1Map, new Runnable() {
+        JMenuItem menuItem2 = addMenuItem(true, new JMenuItem("1. Rail Fence"), new TemplatePanel(new RailFence()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Rail Fence");
@@ -91,7 +91,7 @@ public class MyFrame extends JFrame {
             }
         });
 
-        menuItem2 = addMenuItem(true, new JMenuItem("4. Matrix Transposition (2c)"), new TemplatePanel(new MatrixTransposition3()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(false, new JMenuItem("4. Matrix Transposition (2c)"), new TemplatePanel(new MatrixTransposition3()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 3");

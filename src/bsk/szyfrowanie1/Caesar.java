@@ -33,6 +33,7 @@ public class Caesar implements Cipher {
         return key;
     }
 
+    //najwiekszy wspolny dzielnik
     private int gcd(int a, int b) {
         int t;
         while (b != 0) {
@@ -55,21 +56,61 @@ public class Caesar implements Cipher {
         int k0 = key[0];
         int k1 = key[1];
 
-        Character[] result = new Character[messageLength];
-        int[] resultInt = new int[messageLength];
+        String result = "";
 
-//        for (int i = 0; i < result.length; i++) {
-//            resultInt[i] = 
-//        }
+        for (int i = 0; i < message.length(); i++) {
+            char messageChar = message.charAt(i);
+            if (!Character.isLetter(messageChar)) {
+                result += messageChar;
+            } else {
+                int messageInt = (int) messageChar;
+                messageInt -= 65;
+                int resultInt = (messageInt * k1 + k0) % 26;
+                result += (char) (resultInt + 65);
+            }
+        }
 
-        return Arrays.toString(key);
+        return result;
+    }
+
+    private int eulerFunction(int value) {
+        int result = 0;
+
+        for (int i = 1; i <= value; i++) {
+            if (areRelativelyPrime(i, value)) {
+                result++;
+            }
+        }
+
+        return result;
     }
 
     @Override
     public String decrypyt(String message, String keyText) throws CipherException {
         int[] key = validateKey(keyText);
+        int messageLength = message.length();
+        message = message.toUpperCase();
+        int k0 = key[0];
+        int k1 = key[1];
 
-        return message;
+        String result = "";
+
+        long k1Powered = (long) (Math.pow(k1, eulerFunction(26) - 1));
+        for (int i = 0; i < messageLength; i++) {
+            char messageChar = message.charAt(i);
+            if (!Character.isLetter(messageChar)) {
+                result += messageChar;
+            } else {
+                int messageInt = (int) messageChar;
+                messageInt -= 65;
+                long messageLong = (long) messageChar;
+                messageLong -= 65;
+                long resultLong = ((messageLong + (26 - (long) k0)) * k1Powered) % 26;
+                result += (char) (resultLong + 65);
+            }
+        }
+
+        return result;
     }
 
     @Override
@@ -79,6 +120,7 @@ public class Caesar implements Cipher {
 
     @Override
     public String getTemplateMessage() {
+//        return "alamakota";
         return "CRYPTOGRAPHY";
     }
 
