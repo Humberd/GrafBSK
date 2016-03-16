@@ -1,0 +1,18 @@
+﻿Po uruchomieniu programu należy nacisnąć przycisk "Color picker" znajdujący się u dołu ekranu. 
+Następnie pojawi się okno z możliwością wyboru koloru. 
+Po prawej stronie mamy panel z suwakami i textFieldami RGB, HSV, oraz CMYK. 
+Po lewej natomiast znajdują się dwie zakładki: RGB, oraz HSV. 
+W każdej z tych zakładek znajduje się kolorowy kwadrat, kolorowy prostokąt, oraz prostokąt z aktualnie wybranym kolorem.
+_______
+Aby zmienić aktualnie wybrany kolor należy:
+a) użyć dowolnego suwaka znajdującego się po prawej stronie
+b) użyć dowolnego textFiela znajdującego się po prawej stronie
+c) kliknąć, lub kliknąć i przeciągać(drag) swój docelowy kolor w lewym panelu
+_______
+Wybierany kolor RGB dowolną z powyższych metod będzie automatycznie zamieniany do postaci CMYK reprezentowanej w prawym panelu,
+oraz na odwrót: CMYK jest automatycznie zamieniany na RGB.
+Po kliknięciu w przycisk "OK", wybrany kolor zostaje ustawiony na aktualnie wybrany w edytorze graficznym,
+przez co kolejne rysunki będą wybranego koloru.
+_______
+W programie ISTNIEJE rozróżnienie na aktualnie wybrany kolor RGB i aktualnie wybrany kolor HSV.
+W zależności od tego, która zakładka będzie wyświetlana, kolor z niej będzie brany pod uwagę.

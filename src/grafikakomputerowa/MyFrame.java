@@ -8,6 +8,7 @@ import bsk.szyfrowanie1.RailFence;
 import grafika.zad1.Prymitywy;
 import grafika.zad2.ImageWindow;
 import bsk.szyfrowanie1.TemplatePanel;
+import bsk.szyfrowanie1.Vigenere;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,7 +91,7 @@ public class MyFrame extends JFrame {
             }
         });
 
-        menuItem2 = addMenuItem(false, new JMenuItem("4. Matrix Transposition (2c)"), new TemplatePanel(new MatrixTransposition3()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(true, new JMenuItem("4. Matrix Transposition (2c)"), new TemplatePanel(new MatrixTransposition3()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Matrix Transposition 3");
@@ -101,6 +102,13 @@ public class MyFrame extends JFrame {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Caesar");
+            }
+        });
+        
+        menuItem2 = addMenuItem(false, new JMenuItem("6. Vigenere"), new TemplatePanel(new Vigenere()), bskZad1Map, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("BSK: Transposition: Vigenere");
             }
         });
 

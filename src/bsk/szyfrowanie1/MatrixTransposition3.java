@@ -1,6 +1,7 @@
 package bsk.szyfrowanie1;
 
 import bsk.exceptions.CipherException;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class MatrixTransposition3 implements Cipher {
@@ -41,122 +42,103 @@ public class MatrixTransposition3 implements Cipher {
     @Override
     public String encrypt(String message, String key) throws CipherException {
         int[] keyArray = validateKey(key);
-        int keyLength = keyArray.length;
-        int messageLength = message.length();
-        int rowsNumber = 0;
-        int tempSum = 0;
-        for (int i = 0; i < keyLength; i++) {
-            if (tempSum < messageLength) {
-//                System.out.print(tempSum + " + " + (keyArray[i] + 1) + " = ");
-                tempSum += keyArray[i] + 1;
-//                System.out.println(tempSum);
-                rowsNumber++;
-            } else {
-                break;
-            }
+        String result = "";
+        int numberOfCharsInFullBlock = 0;
+        for (int k : keyArray) {
+            numberOfCharsInFullBlock += k + 1;
         }
-//        int lettersNumberInBlock = 0;
-//        for (int i = 1; i <= keyLength; i++) {
-//            lettersNumberInBlock += i;
-//        }
-//        int blocksNumber = (messageLength % lettersNumberInBlock > 0) ? messageLength / lettersNumberInBlock + 1 : messageLength / lettersNumberInBlock;
-//       
-//        
-//        for (int i=0; i < blocksNumber; i++) {
-//            if (i == blocksNumber -1 ) {
-//                
-//            } else {
-//                
-//            }
-//        }
-//        double temp = ((double) (1 + keyLength) / 2) * keyLength;
-//        System.out.println(temp);
 
-        Character[][] messageArray = new Character[rowsNumber][keyLength];
-        int counter = 0;
-        for (int i = 0; i < rowsNumber; i++) {
-            for (int j = 0; j < keyArray[i] + 1; j++) {
-                if (counter < messageLength) {
-                    messageArray[i][j] = message.charAt(counter++);
+        int numberOfFullBlocks = message.length() / numberOfCharsInFullBlock;
+        int numberOfCharsInLastBlock = message.length() % numberOfCharsInFullBlock;
+
+        char[][][] blocksArray = new char[numberOfCharsInLastBlock > 0 ? numberOfFullBlocks + 1 : numberOfFullBlocks][keyArray.length][keyArray.length];
+        for (int i = 0, counter = 0; i < blocksArray.length; i++) {
+            for (int j = 0; j < blocksArray[i].length; j++) {
+                for (int k = 0; k < blocksArray[i][j].length; k++) {
+                    if (counter < message.length()) {
+//                        System.out.println(i + "/" + j + "/" + k + ": " + message.charAt(counter));
+                        blocksArray[i][j][k] = message.charAt(counter++);
+
+//                        System.out.println(keyArray[j] + "==" + k);
+                        if (keyArray[j] == k) {
+                            break;
+                        }
+                    }
                 }
             }
         }
 
-//        for (int i = 0; i < rowsNumber; i++) {
-//            System.out.println(Arrays.toString(messageArray[i]));
-//        }
-        char[] result = new char[messageLength];
-        counter = 0;
-        for (int i = 0; i < keyLength; i++) {
-            for (int j = 0; j < rowsNumber; j++) {
-                if (messageArray[j][keyArray[i]] != null) {
-                    result[counter++] = messageArray[j][keyArray[i]];
+        for (int t = 0; t < keyArray.length; t++) {
+            for (int i = 0; i < blocksArray.length; i++) {
+                for (int j = 0; j < blocksArray[i].length; j++) {
+                    if (Character.compare(Character.MIN_VALUE, blocksArray[i][j][keyArray[t]]) != 0) {
+                        result += blocksArray[i][j][keyArray[t]];
+                    }
                 }
             }
         }
-        int temp = (int)((double) (1 + keyLength) / 2) * keyLength;
-        if (message.length() > temp) {
-            return new String(result) + encrypt(message.substring(temp), key);
+
+        for (char[][] ii : blocksArray) {
+            for (char[] j : ii) {
+                for (char k : j) {
+                    System.out.print(k + ",");
+                }
+                System.out.println();
+            }
+            System.out.println();
         }
-        return new String(result);
+        System.out.println(Arrays.toString(keyArray));
+        return result;
     }
 
     @Override
     public String decrypyt(String message, String key) throws CipherException {
         int[] keyArray = validateKey(key);
-        int keyLength = keyArray.length;
-        int messageLength = message.length();
-        int rowsNumber = 0;
-        int tempSum = 0;
-        for (int i = 0; i < keyLength; i++) {
-            if (tempSum < messageLength) {
-//                System.out.print(tempSum + " + " + (keyArray[i] + 1) + " = ");
-                tempSum += keyArray[i] + 1;
-//                System.out.println(tempSum);
-                rowsNumber++;
-            } else {
-                break;
-            }
+        String result = "";
+        int numberOfCharsInFullBlock = 0;
+        for (int k : keyArray) {
+            numberOfCharsInFullBlock += k + 1;
         }
 
-        //wypelniam tablice w miejscach, w ktorych bedzie mozna wpisac liczby
-        Character[][] messageArray = new Character[rowsNumber][keyLength];
-        int counter = 0;
-        for (int i = 0; i < rowsNumber; i++) {
-            for (int j = 0; j < keyArray[i] + 1; j++) {
-                if (counter < messageLength) {
-                    messageArray[i][j] = '.';
-                    counter++;
+        int numberOfFullBlocks = message.length() / numberOfCharsInFullBlock;
+        int numberOfCharsInLastBlock = message.length() % numberOfCharsInFullBlock;
+
+        char[][][] blocksArray = new char[numberOfCharsInLastBlock > 0 ? numberOfFullBlocks + 1 : numberOfFullBlocks][keyArray.length][keyArray.length];
+        for (int i = 0, counter = 0; i < blocksArray.length; i++) {
+            for (int j = 0; j < blocksArray[i].length; j++) {
+                for (int k = 0; k < blocksArray[i][j].length; k++) {
+                    if (counter < message.length()) {
+                        counter++;
+                        blocksArray[i][j][k] = 'I';
+
+                        if (keyArray[j] == k) {
+                            break;
+                        }
+                    }
                 }
             }
         }
 
-        //wypelniam tablice [][] danymi
-        counter = 0;
-        for (int i = 0; i < keyLength; i++) {
-            for (int j = 0; j < rowsNumber; j++) {
-                if (messageArray[j][keyArray[i]] != null) {
-                    messageArray[j][keyArray[i]] = message.charAt(counter++);
+        for (int t = 0, counter = 0; t < keyArray.length; t++) {
+            for (int i = 0; i < blocksArray.length; i++) {
+                for (int j = 0; j < blocksArray[i].length; j++) {
+                    if (Character.compare('I', blocksArray[i][j][keyArray[t]]) == 0) {
+                        blocksArray[i][j][keyArray[t]] = message.charAt(counter++);
+                    }
                 }
             }
         }
 
-//        for (int i = 0; i < rowsNumber; i++) {
-//            System.out.println(Arrays.toString(messageArray[i]));
-//        }
-        char[] result = new char[messageLength];
-        counter = 0;
-        for (int i = 0; i < rowsNumber; i++) {
-            for (int j = 0; j < keyLength; j++) {
-                if (messageArray[i][j] != null) {
-                    result[counter++] = messageArray[i][j];
-                } else {
-                    break;
+        for (int i = 0, counter = 0; i < blocksArray.length; i++) {
+            for (int j = 0; j < blocksArray[i].length; j++) {
+                for (int k = 0; k < blocksArray[i][j].length; k++) {
+                    if (Character.compare(Character.MIN_VALUE, blocksArray[i][j][k]) != 0) {
+                        result += blocksArray[i][j][k];
+                    }
                 }
             }
         }
-
-        return new String(result);
+        return result;
     }
 
     @Override
@@ -169,8 +151,8 @@ public class MatrixTransposition3 implements Cipher {
 //        return "HERE IS A SECRET MESSAGE ENCIPHERED BY TRANSPOSITION";
 //        return "HEREISASECRETMESSAGEENCIPHEREDBYTRANSPOSITION";
 //        return "HEESPNIRRSSEESEIYASCBTEMGEPNANDICTRTAHSOIEERO";
-//        return "ALA MA KOTA KOT MA ALE";
-        return "ALA MA KOTA";
+        return "ALA MA KOTA KOT MA ALE";
+//        return "ALA MA KOTA";
     }
 
     @Override
