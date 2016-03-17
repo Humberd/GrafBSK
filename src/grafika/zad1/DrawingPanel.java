@@ -254,7 +254,9 @@ public class DrawingPanel extends JPanel {
     }
 
     public void popLastDrawing() {
-        undoList.addLast(new HistoryPop(drawingList.pop()));
+        DrawingClass c = getCurrentDrawing();
+        setCurrentDrawing(drawingList.pop());
+        undoList.addLast(new HistoryPop(c));
         redoList.clear();
     }
 

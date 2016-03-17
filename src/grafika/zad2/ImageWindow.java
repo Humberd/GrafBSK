@@ -3,19 +3,23 @@ package grafika.zad2;
 import grafika.JPEG.JPGextension;
 import grafika.PPM.PPMextension;
 import grafika.exceptions.FileException;
+import grafika.zad2.filtry.BrightnessChangerFilter;
+import grafika.zad2.filtry.ColorChangerFilter;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileFilter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ImageWindow extends JPanel {
@@ -24,10 +28,34 @@ public class ImageWindow extends JPanel {
     private FileType openedFile;
     private ImageEditor imageEditor = new ImageEditor();
 
+    private ColorChangerFilter colorChangerWindow;
+    private BrightnessChangerFilter brightnessChangerWindow;
+
     public ImageWindow() {
         super();
         setName("image Editor");
         addComponents();
+        //        KeyAdapter keyAdapter = new KeyAdapter() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {
+//                System.out.println(e.getModifiers()+"dupa");
+//            }
+//
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                System.out.println("ok");
+//            }
+//
+//            
+//        };
+//        addKeyListener(keyAdapter);
+        try {
+            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/testJPG.jpg"));
+            openedFile.openFile();
+            imageEditor.pushNewImage(openedFile.getImage());
+        } catch (FileException ex) {
+            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void addComponents() {
@@ -61,6 +89,8 @@ public class ImageWindow extends JPanel {
         menuBar.add(fileMenu);
 
         JMenuItem openFileItem = new JMenuItem("Open");
+        KeyStroke ctrlO = KeyStroke.getKeyStroke("control O");
+        openFileItem.setAccelerator(ctrlO);
         fileMenu.add(openFileItem);
         attachItem(openFileItem, fileMenu, new Runnable() {
             @Override
@@ -82,7 +112,7 @@ public class ImageWindow extends JPanel {
                     try {
                         selectClassByExtensionName(fileChooser.getSelectedFile());
                         openedFile.openFile();
-                        imageEditor.setImage(openedFile.getImage());
+                        getImageEditor().pushNewImage(openedFile.getImage());
                     } catch (FileException ex) {
                         errorHandler(ex);
                     }
@@ -91,6 +121,8 @@ public class ImageWindow extends JPanel {
         });
 
         JMenuItem saveFileItem = new JMenuItem("Save");
+        KeyStroke ctrlS = KeyStroke.getKeyStroke("control S");
+        saveFileItem.setAccelerator(ctrlS);
         fileMenu.add(saveFileItem);
         attachItem(saveFileItem, fileMenu, new Runnable() {
             @Override
@@ -102,11 +134,9 @@ public class ImageWindow extends JPanel {
                 fileChooser.setApproveButtonText("Save");
                 fileChooser.setToolTipText("Save");
                 fileChooser.setDialogTitle("Save");
-//                setFilter("ppm", fileChooser);
                 setFilter("jpg", fileChooser);
                 int returnValue = fileChooser.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
-//                    System.out.println(fileChooser.getFileFilter);
                     if (openedFile != null) {
                         try {
                             FileNameExtensionFilter filter = (FileNameExtensionFilter) fileChooser.getFileFilter();
@@ -122,6 +152,64 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
+        ////////////////////////
+        JMenu editMenu = new JMenu("Edit");
+        menuBar.add(editMenu);
+
+        JMenuItem undoFileItem = new JMenuItem("Undo");
+        KeyStroke ctrlZ = KeyStroke.getKeyStroke("control Z");
+        undoFileItem.setAccelerator(ctrlZ);
+        editMenu.add(undoFileItem);
+        attachItem(undoFileItem, editMenu, new Runnable() {
+            @Override
+            public void run() {
+                getImageEditor().undo();
+            }
+        });
+
+        JMenuItem redoFileItem = new JMenuItem("Redo");
+        KeyStroke ctrlY = KeyStroke.getKeyStroke("control Y");
+        redoFileItem.setAccelerator(ctrlY);
+        editMenu.add(redoFileItem);
+        attachItem(redoFileItem, editMenu, new Runnable() {
+            @Override
+            public void run() {
+                getImageEditor().redo();
+            }
+        });
+
+        ////////////////////////////
+        JMenu filterMenu = new JMenu("Filters");
+        menuBar.add(filterMenu);
+
+        JMenu pointTransformations = new JMenu("Point Transformations");
+        filterMenu.add(pointTransformations);
+
+        KeyStroke testStroke = KeyStroke.getKeyStroke("control A");
+
+        JMenuItem colorChangerItem = new JMenuItem("Color changer");
+        pointTransformations.add(colorChangerItem);
+        attachItem(colorChangerItem, pointTransformations, new Runnable() {
+            @Override
+            public void run() {
+                if (getColorChangerWindow() == null) {
+                    setColorChangerWindow(new ColorChangerFilter(ImageWindow.this));
+                }
+            }
+        });
+
+        JMenuItem brightnessChangerItem = new JMenuItem("Brightness changer");
+        brightnessChangerItem.setAccelerator(testStroke);
+        pointTransformations.add(brightnessChangerItem);
+        attachItem(brightnessChangerItem, pointTransformations, new Runnable() {
+            @Override
+            public void run() {
+                if (getBrightnessChangerWindow() == null) {
+                    setBrightnessChangerWindow(new BrightnessChangerFilter(ImageWindow.this));
+                }
+            }
+        });
+
     }
 
     private void attachItem(JMenuItem item, JMenu menu, Runnable runnable) {
@@ -181,11 +269,35 @@ public class ImageWindow extends JPanel {
     }
 
     private void errorHandler(String text) {
-        JOptionPane.showMessageDialog(this, text,"Error",JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, text, "Error", JOptionPane.ERROR_MESSAGE);
         System.err.println(text);
     }
 
     private void errorHandler(Exception ex) {
         errorHandler("Line < = [" + openedFile.getLinesRead() + "]: " + ex.getMessage());
+    }
+
+    public ImageEditor getImageEditor() {
+        return imageEditor;
+    }
+
+    public void setImageEditor(ImageEditor imageEditor) {
+        this.imageEditor = imageEditor;
+    }
+
+    public ColorChangerFilter getColorChangerWindow() {
+        return colorChangerWindow;
+    }
+
+    public void setColorChangerWindow(ColorChangerFilter colorChangerWindow) {
+        this.colorChangerWindow = colorChangerWindow;
+    }
+
+    public BrightnessChangerFilter getBrightnessChangerWindow() {
+        return brightnessChangerWindow;
+    }
+
+    public void setBrightnessChangerWindow(BrightnessChangerFilter brightnessChangerWindow) {
+        this.brightnessChangerWindow = brightnessChangerWindow;
     }
 }

@@ -57,7 +57,7 @@ public class MyFrame extends JFrame {
             }
 
         });
-        menuItem = addMenuItem(false, new JMenuItem("2. PPM"), new ImageWindow(), programsMap, new Runnable() {
+        menuItem = addMenuItem(true, new JMenuItem("2. PPM"), new ImageWindow(), programsMap, new Runnable() {
             @Override
             public void run() {
                 System.out.println("22222");
@@ -69,7 +69,7 @@ public class MyFrame extends JFrame {
         JMenu menu2Zad1 = new JMenu("1. Transposition");
         menu2.add(menu2Zad1);
 
-        JMenuItem menuItem2 = addMenuItem(true, new JMenuItem("1. Rail Fence"), new TemplatePanel(new RailFence()), bskZad1Map, new Runnable() {
+        JMenuItem menuItem2 = addMenuItem(false, new JMenuItem("1. Rail Fence"), new TemplatePanel(new RailFence()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Rail Fence");
