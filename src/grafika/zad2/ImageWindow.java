@@ -5,6 +5,7 @@ import grafika.PPM.PPMextension;
 import grafika.exceptions.FileException;
 import grafika.zad2.filtry.BrightnessChangerFilter;
 import grafika.zad2.filtry.ColorChangerFilter;
+import grafika.zad2.filtry.GrayScaleChangerFilter;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,6 +31,7 @@ public class ImageWindow extends JPanel {
 
     private ColorChangerFilter colorChangerWindow;
     private BrightnessChangerFilter brightnessChangerWindow;
+    private GrayScaleChangerFilter grayScaleChangerWindow;
 
     public ImageWindow() {
         super();
@@ -199,7 +201,6 @@ public class ImageWindow extends JPanel {
         });
 
         JMenuItem brightnessChangerItem = new JMenuItem("Brightness changer");
-        brightnessChangerItem.setAccelerator(testStroke);
         pointTransformations.add(brightnessChangerItem);
         attachItem(brightnessChangerItem, pointTransformations, new Runnable() {
             @Override
@@ -209,7 +210,18 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
-
+        
+        
+        JMenuItem grayScaleChangerItem = new JMenuItem("Gray Scale changer");
+        grayScaleChangerItem.setAccelerator(testStroke);
+        attachItem(grayScaleChangerItem, pointTransformations, new Runnable() {
+            @Override
+            public void run() {
+                if (getGrayScaleChangerWindow() == null) {
+                    setGrayScaleChangerWindow(new GrayScaleChangerFilter(ImageWindow.this));
+                }
+            }
+        });
     }
 
     private void attachItem(JMenuItem item, JMenu menu, Runnable runnable) {
@@ -299,5 +311,13 @@ public class ImageWindow extends JPanel {
 
     public void setBrightnessChangerWindow(BrightnessChangerFilter brightnessChangerWindow) {
         this.brightnessChangerWindow = brightnessChangerWindow;
+    }
+
+    public GrayScaleChangerFilter getGrayScaleChangerWindow() {
+        return grayScaleChangerWindow;
+    }
+
+    public void setGrayScaleChangerWindow(GrayScaleChangerFilter grayScaleChangerWindow) {
+        this.grayScaleChangerWindow = grayScaleChangerWindow;
     }
 }
