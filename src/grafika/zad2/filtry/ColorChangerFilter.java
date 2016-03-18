@@ -34,12 +34,14 @@ public class ColorChangerFilter extends FilterWindow {
 
     @Override
     protected void customInit() {
+        setShowButtons(false);
+        setShowPreviewImageCheckBox(false);
         addComponents();
     }
 
     private void createNewImage() {
-        BufferedImage prevImage = getImage();
-        BufferedImage newImage = new BufferedImage(prevImage.getWidth(), prevImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage baseImage = getImage();
+        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
         boolean redChecked = redCheckBox.isSelected();
         boolean greenChecked = greenCheckBox.isSelected();
@@ -47,9 +49,9 @@ public class ColorChangerFilter extends FilterWindow {
 
         int opValue = (int) inputField.getValue();
 
-        for (int y = 0; y < prevImage.getHeight(); y++) {
-            for (int x = 0; x < prevImage.getWidth(); x++) {
-                Color prevPixelColor = new Color(prevImage.getRGB(x, y));
+        for (int y = 0; y < baseImage.getHeight(); y++) {
+            for (int x = 0; x < baseImage.getWidth(); x++) {
+                Color prevPixelColor = new Color(baseImage.getRGB(x, y));
                 int red = prevPixelColor.getRed();
                 int green = prevPixelColor.getGreen();
                 int blue = prevPixelColor.getBlue();
@@ -69,7 +71,7 @@ public class ColorChangerFilter extends FilterWindow {
             }
         }
 
-        setImage(newImage);
+        pushNewImage(newImage);
     }
 
     private void addComponents() {

@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 public class ImageEditor extends JPanel {
 
     private BufferedImage image;
+    private BufferedImage previewImage;
     private LinkedList<History> undoImages = new LinkedList<>();
     private LinkedList<History> redoImages = new LinkedList<>();
     private AffineTransform transform;
@@ -28,7 +29,9 @@ public class ImageEditor extends JPanel {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        if (image != null) {
+        if (previewImage != null) {
+            g2.drawImage(previewImage, 0, 0, getWidth(), getHeight(), this);
+        } else if (image != null) {
             int startX = (int) (((float) getWidth() / 2) - image.getWidth());
             int startY = (int) (((float) getHeight() / 2) - image.getHeight());
 //            g2.drawImage(image, transform, startX, startY);
@@ -40,6 +43,15 @@ public class ImageEditor extends JPanel {
 
     public BufferedImage getImage() {
         return image;
+    }
+
+    public BufferedImage getPreviewImage() {
+        return previewImage;
+    }
+
+    public void setPreviewImage(BufferedImage previewImage) {
+        this.previewImage = previewImage;
+        repaint();
     }
 
     private class HistoryPop implements History {
@@ -88,6 +100,7 @@ public class ImageEditor extends JPanel {
         undoImages.addLast(new HistoryPush(image, this.image));
         redoImages.clear();
         this.image = image;
+        this.previewImage = null;
         repaint();
 
     }
