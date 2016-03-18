@@ -98,7 +98,7 @@ public class MyFrame extends JFrame {
             }
         });
 
-        menuItem2 = addMenuItem(false, new JMenuItem("5. Caesar"), new TemplatePanel(new Caesar()), bskZad1Map, new Runnable() {
+        menuItem2 = addMenuItem(true, new JMenuItem("5. Caesar"), new TemplatePanel(new Caesar()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Transposition: Caesar");

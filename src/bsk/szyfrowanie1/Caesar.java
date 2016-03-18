@@ -1,6 +1,7 @@
 package bsk.szyfrowanie1;
 
 import bsk.exceptions.CipherException;
+import java.math.BigInteger;
 import java.util.Arrays;
 
 public class Caesar implements Cipher {
@@ -94,8 +95,15 @@ public class Caesar implements Cipher {
         int k1 = key[1];
 
         String result = "";
-
-        long k1Powered = (long) (Math.pow(k1, eulerFunction(26) - 1));
+        int power = eulerFunction(26) - 1;
+        long k1Powered = 1;
+//        BigInteger k1Pow = new BigInteger(k1 + "");
+//        k1Pow.modPow(new BigInteger(power + ""), new BigInteger("26"));
+        for (int i = 0; i < power; i++) {
+            k1Powered = (k1Powered * k1) % 26;
+        }
+//        System.out.println(k1Powered);
+//        long k1Powered = (long) (Math.pow(k1, eulerFunction(26) - 1));
         for (int i = 0; i < messageLength; i++) {
             char messageChar = message.charAt(i);
             if (!Character.isLetter(messageChar)) {
@@ -105,7 +113,16 @@ public class Caesar implements Cipher {
                 messageInt -= 65;
                 long messageLong = (long) messageChar;
                 messageLong -= 65;
-                long resultLong = ((messageLong + (26 - (long) k0)) * k1Powered) % 26;
+//                long resultLong = ((messageLong + (26 - (long) k0)) * k1Pow.longValue()) % 26;
+                long firstPart = (messageLong + (26 - (long) k0)) % 26;
+
+                if (firstPart < 0) {
+                    firstPart = 26 + firstPart;
+                }
+                System.out.println(firstPart);
+//                System.out.println((messageLong + (26 - (long) k0)));
+                long resultLong = (firstPart * k1Powered) % 26;
+//                long resultLong = (((messageLong + (26 - (long) k0)) % 26) * k1Powered) % 26;
                 result += (char) (resultLong + 65);
             }
         }
@@ -126,7 +143,7 @@ public class Caesar implements Cipher {
 
     @Override
     public String getTemplateKey() {
-        return "3,5";
+        return "93,95";
     }
 
 }
