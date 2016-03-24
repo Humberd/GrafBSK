@@ -12,25 +12,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import test.SimpleThreadPool;
 
-public class SobelMaskFilter extends FilterWindow {
+public class HighPassMaskFilter extends FilterWindow {
 
-    private static final int[][] Sx = new int[][]{{
-        -1, 0, 1}, {
-        -2, 0, 2}, {
-        -1, 0, 1}};
+    private static final int[][] Mask = new int[][]{{
+        -1, -1, -1}, {
+        -1, 9, -1}, {
+        -1, -1, -1}};
 
-    private static final int[][] Sy = new int[][]{{
-        -1, -2, -1}, {
-        0, 0, 0}, {
-        1, 2, 1}};
-
-    public SobelMaskFilter(ImageWindow imageWindow) {
-        super("Sobel Mask", imageWindow);
+    public HighPassMaskFilter(ImageWindow imageWindow) {
+        super("High-Pass Mask", imageWindow);
     }
 
     public void filterImage() {
         BufferedImage baseImage = getImage();
-        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
         ExecutorService executor = Executors.newWorkStealingPool();
 
@@ -39,17 +34,13 @@ public class SobelMaskFilter extends FilterWindow {
         final int maskSize = 3;
         int maskSideLength = (maskSize - 1) / 2;
         int maskItems = (int) Math.pow(maskSize, 2);
-
         for (int tempy = 0; tempy < newImage.getHeight(); tempy++) {
             int y = tempy;
             executor.execute(() -> {
                 for (int x = 0; x < newImage.getWidth(); x++) {
-                    int redSumX = 0;
-                    int redSumY = 0;
-                    int greenSumX = 0;
-                    int greenSumY = 0;
-                    int blueSumX = 0;
-                    int blueSumY = 0;
+                    int redSum = 0;
+                    int greenSum = 0;
+                    int blueSum = 0;
 
                     for (int my = -maskSideLength; my <= maskSideLength; my++) {
                         if (my + y < 0 || my + y >= newImage.getHeight()) {
@@ -63,33 +54,27 @@ public class SobelMaskFilter extends FilterWindow {
                             int red = maskPixelColor.getRed();
                             int green = maskPixelColor.getGreen();
                             int blue = maskPixelColor.getBlue();
-                            redSumX += red * Sx[my + 1][mx + 1];
-                            redSumY += red * Sy[my + 1][mx + 1];
-                            greenSumX += green * Sx[my + 1][mx + 1];
-                            greenSumY += green * Sy[my + 1][mx + 1];
-                            blueSumX += blue * Sx[my + 1][mx + 1];
-                            blueSumY += blue * Sy[my + 1][mx + 1];
+                            redSum += red * Mask[my + 1][mx + 1];
+                            greenSum += green * Mask[my + 1][mx + 1];
+                            blueSum += blue * Mask[my + 1][mx + 1];
                         }
                     }
-//                    int sumX = (redSumX + greenSumX + blueSumX) / 3;
-//                    int sumY = (redSumY + greenSumY + blueSumY) / 3;
-//                    int result = (int) Math.sqrt(Math.pow(sumX, 2) + Math.pow(sumY, 2));
-//                    if (result > 255) {
-//                        result = 255;
-//                    }
-                    int newRed = Math.abs(redSumX) + Math.abs(redSumY);
-                    int newGreen = Math.abs(greenSumX) + Math.abs(greenSumY);
-                    int newBlue = Math.abs(blueSumX) + Math.abs(blueSumY);
-                    if (newRed > 255) {
-                        newRed = 255;
+                    if (redSum > 255) {
+                        redSum = 255;
+                    } else if (redSum < 0) {
+                        redSum = 0;
                     }
-                    if (newGreen > 255) {
-                        newGreen = 255;
+                    if (greenSum > 255) {
+                        greenSum = 255;
+                    } else if (greenSum < 0) {
+                        greenSum = 0;
                     }
-                    if (newBlue > 255) {
-                        newBlue = 255;
+                    if (blueSum > 255) {
+                        blueSum = 255;
+                    } else if (blueSum < 0) {
+                        blueSum = 0;
                     }
-                    Color newPixelColor = new Color(newRed, newGreen, newBlue);
+                    Color newPixelColor = new Color(redSum, greenSum, blueSum);
                     newImage.setRGB(x, y, newPixelColor.getRGB());
 //                    raster.setPixel(x, y, new int[]{result});
                 }
@@ -107,6 +92,7 @@ public class SobelMaskFilter extends FilterWindow {
 
     @Override
     protected void customInit() {
+
     }
 
     @Override
@@ -118,7 +104,7 @@ public class SobelMaskFilter extends FilterWindow {
 
     @Override
     public void closeMe() {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

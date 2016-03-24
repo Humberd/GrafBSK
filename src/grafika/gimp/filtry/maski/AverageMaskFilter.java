@@ -125,4 +125,9 @@ public class AverageMaskFilter extends FilterWindow {
         getWindow().setAverageMaskWindow(null);
     }
 
+    @Override
+    protected void invokeAfterBuild() {
+        super.invokeAfterBuild(); //To change body of generated methods, choose Tools | Templates.
+        filterImage();
+    }
 }

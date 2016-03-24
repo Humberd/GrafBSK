@@ -7,6 +7,7 @@ import grafika.gimp.filtry.BrightnessChangerFilter;
 import grafika.gimp.filtry.ColorChangerFilter;
 import grafika.gimp.filtry.GrayScaleChangerFilter;
 import grafika.gimp.filtry.maski.AverageMaskFilter;
+import grafika.gimp.filtry.maski.HighPassMaskFilter;
 import grafika.gimp.filtry.maski.MedianMaskFilter;
 import grafika.gimp.filtry.maski.SobelMaskFilter;
 import java.awt.Dimension;
@@ -255,11 +256,19 @@ public class ImageWindow extends JPanel {
         });
 
         JMenuItem sobelMaskFilterItem = new JMenuItem("Sobel Mask Filter");
-        sobelMaskFilterItem.setAccelerator(testStroke);
         attachItem(sobelMaskFilterItem, maskFilters, new Runnable() {
             @Override
             public void run() {
-                new SobelMaskFilter(ImageWindow.this).filterImage();
+                new SobelMaskFilter(ImageWindow.this);
+            }
+        });
+        
+        JMenuItem highPassFilterItem = new JMenuItem("High-Pass Mask Filter");
+//        highPassFilterItem.setAccelerator(testStroke);
+        attachItem(highPassFilterItem, maskFilters, new Runnable() {
+            @Override
+            public void run() {
+                new HighPassMaskFilter(ImageWindow.this);
             }
         });
     }
