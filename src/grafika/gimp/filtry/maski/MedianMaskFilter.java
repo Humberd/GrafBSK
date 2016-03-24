@@ -34,7 +34,7 @@ public class MedianMaskFilter extends FilterWindow {
         addComponents();
     }
 
-    private void createNewImage() {
+    private void filterImage() {
         BufferedImage baseImage = getImage();
         BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
@@ -117,7 +117,7 @@ public class MedianMaskFilter extends FilterWindow {
             public void stateChanged(ChangeEvent e) {
                 if (!medianSlider.getValueIsAdjusting()) {
                     medianSliderLabel.setText(medianSlider.getValue() + "");
-                    createNewImage();
+                    filterImage();
                 }
             }
         });
@@ -143,6 +143,6 @@ public class MedianMaskFilter extends FilterWindow {
     @Override
     protected void invokeAfterBuild() {
         super.invokeAfterBuild();
-        createNewImage();
+        filterImage();
     }
 }

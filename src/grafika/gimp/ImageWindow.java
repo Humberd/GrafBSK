@@ -8,6 +8,7 @@ import grafika.gimp.filtry.ColorChangerFilter;
 import grafika.gimp.filtry.GrayScaleChangerFilter;
 import grafika.gimp.filtry.maski.AverageMaskFilter;
 import grafika.gimp.filtry.maski.MedianMaskFilter;
+import grafika.gimp.filtry.maski.SobelMaskFilter;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -63,7 +64,7 @@ public class ImageWindow extends JPanel {
 //            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
 //        }
         try {
-            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/testJPG.jpg"));
+            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/lenaOriginal.jpg"));
             openedFile.openFile();
             imageEditor.pushNewImage(openedFile.getImage());
         } catch (FileException ex) {
@@ -244,7 +245,6 @@ public class ImageWindow extends JPanel {
         });
         
         JMenuItem medianMaskFilterItem = new JMenuItem("Median Mask Filter");
-        medianMaskFilterItem.setAccelerator(testStroke);
         attachItem(medianMaskFilterItem, maskFilters, new Runnable() {
             @Override
             public void run() {
@@ -254,6 +254,14 @@ public class ImageWindow extends JPanel {
             }
         });
 
+        JMenuItem sobelMaskFilterItem = new JMenuItem("Sobel Mask Filter");
+        sobelMaskFilterItem.setAccelerator(testStroke);
+        attachItem(sobelMaskFilterItem, maskFilters, new Runnable() {
+            @Override
+            public void run() {
+                new SobelMaskFilter(ImageWindow.this).filterImage();
+            }
+        });
     }
 
     private void attachItem(JMenuItem item, JMenu menu, Runnable runnable) {

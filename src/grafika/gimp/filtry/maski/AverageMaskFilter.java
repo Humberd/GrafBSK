@@ -31,7 +31,7 @@ public class AverageMaskFilter extends FilterWindow {
         addComponents();
     }
 
-    private void createNewImage() {
+    private void filterImage() {
         BufferedImage baseImage = getImage();
         BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
@@ -102,7 +102,7 @@ public class AverageMaskFilter extends FilterWindow {
             public void stateChanged(ChangeEvent e) {
                 if (!averageSlider.getValueIsAdjusting()) {
                     averageSliderLabel.setText(averageSlider.getValue() + "");
-                    createNewImage();
+                    filterImage();
                 }
             }
         });

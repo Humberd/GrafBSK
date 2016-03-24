@@ -79,7 +79,7 @@ public abstract class FilterWindow extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (getInnerPreviewImage() != null) {
-                        imageEditor.pushNewImage(getInnerPreviewImage());
+                        pushNewImage(getInnerPreviewImage());
                     }
                     FilterWindow.this.dispatchEvent(new WindowEvent(FilterWindow.this, WindowEvent.WINDOW_CLOSING));
                 }
