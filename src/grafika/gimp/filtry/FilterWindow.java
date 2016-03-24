@@ -114,9 +114,14 @@ public abstract class FilterWindow extends JDialog {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+        
+        invokeAfterBuild();
     }
 
     protected abstract void customInit();
+    protected void invokeAfterBuild() {
+        
+    }
 
     public BufferedImage getImage() {
         return imageEditor.getImage();

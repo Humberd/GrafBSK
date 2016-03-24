@@ -96,13 +96,6 @@ public class BrightnessChangerFilter extends FilterWindow {
         inputPanel.add(brightnessLabel);
         inputPanel.add(brightnessSlider);
         inputPanel.add(brightnessSpinner);
-
-//        c.gridx = 0;
-//        c.gridy = 1;
-//        JPanel buttonsPanel = new JPanel();
-//        add(buttonsPanel, c);
-//        buttonsPanel.add(okButton);
-//        buttonsPanel.add(cancelButton);
     }
 
     @Override

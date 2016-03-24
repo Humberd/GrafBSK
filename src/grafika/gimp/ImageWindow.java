@@ -6,6 +6,8 @@ import grafika.exceptions.FileException;
 import grafika.gimp.filtry.BrightnessChangerFilter;
 import grafika.gimp.filtry.ColorChangerFilter;
 import grafika.gimp.filtry.GrayScaleChangerFilter;
+import grafika.gimp.filtry.maski.AverageMaskFilter;
+import grafika.gimp.filtry.maski.MedianMaskFilter;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,6 +34,8 @@ public class ImageWindow extends JPanel {
     private ColorChangerFilter colorChangerWindow;
     private BrightnessChangerFilter brightnessChangerWindow;
     private GrayScaleChangerFilter grayScaleChangerWindow;
+    private AverageMaskFilter averageMaskWindow;
+    private MedianMaskFilter medianMaskWindow;
 
     public ImageWindow() {
         super();
@@ -51,6 +55,13 @@ public class ImageWindow extends JPanel {
 //            
 //        };
 //        addKeyListener(keyAdapter);
+//        try {
+//            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/testJPG.jpg"));
+//            openedFile.openFile();
+//            imageEditor.pushNewImage(openedFile.getImage());
+//        } catch (FileException ex) {
+//            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         try {
             selectClassByExtensionName(new File("C:/Users/Sawik/Documents/testJPG.jpg"));
             openedFile.openFile();
@@ -208,10 +219,8 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
-        
-        
+
         JMenuItem grayScaleChangerItem = new JMenuItem("Gray Scale changer");
-//        grayScaleChangerItem.setAccelerator(testStroke);
         attachItem(grayScaleChangerItem, pointTransformations, new Runnable() {
             @Override
             public void run() {
@@ -220,6 +229,31 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
+
+        JMenu maskFilters = new JMenu("Mask Filters");
+        filterMenu.add(maskFilters);
+
+        JMenuItem averageMaskFilterItem = new JMenuItem("Average Mask Filter");
+        attachItem(averageMaskFilterItem, maskFilters, new Runnable() {
+            @Override
+            public void run() {
+                if (getAverageMaskWindow() == null) {
+                    setAverageMaskWindow(new AverageMaskFilter(ImageWindow.this));
+                }
+            }
+        });
+        
+        JMenuItem medianMaskFilterItem = new JMenuItem("Median Mask Filter");
+        medianMaskFilterItem.setAccelerator(testStroke);
+        attachItem(medianMaskFilterItem, maskFilters, new Runnable() {
+            @Override
+            public void run() {
+                if (getMedianMaskWindow() == null) {
+                    setMedianMaskWindow(new MedianMaskFilter(ImageWindow.this));
+                }
+            }
+        });
+
     }
 
     private void attachItem(JMenuItem item, JMenu menu, Runnable runnable) {
@@ -317,5 +351,21 @@ public class ImageWindow extends JPanel {
 
     public void setGrayScaleChangerWindow(GrayScaleChangerFilter grayScaleChangerWindow) {
         this.grayScaleChangerWindow = grayScaleChangerWindow;
+    }
+
+    public AverageMaskFilter getAverageMaskWindow() {
+        return averageMaskWindow;
+    }
+
+    public void setAverageMaskWindow(AverageMaskFilter averageMaskWindow) {
+        this.averageMaskWindow = averageMaskWindow;
+    }
+
+    public MedianMaskFilter getMedianMaskWindow() {
+        return medianMaskWindow;
+    }
+
+    public void setMedianMaskWindow(MedianMaskFilter medianMaskWindow) {
+        this.medianMaskWindow = medianMaskWindow;
     }
 }
