@@ -6,6 +6,8 @@ import grafika.exceptions.FileException;
 import grafika.gimp.filtry.BrightnessChangerFilter;
 import grafika.gimp.filtry.ColorChangerFilter;
 import grafika.gimp.filtry.GrayScaleChangerFilter;
+import grafika.gimp.filtry.histogramy.HistogramFilter;
+import grafika.gimp.filtry.histogramy.HistogramWindow;
 import grafika.gimp.filtry.maski.AverageMaskFilter;
 import grafika.gimp.filtry.maski.HighPassMaskFilter;
 import grafika.gimp.filtry.maski.MedianMaskFilter;
@@ -38,6 +40,7 @@ public class ImageWindow extends JPanel {
     private GrayScaleChangerFilter grayScaleChangerWindow;
     private AverageMaskFilter averageMaskWindow;
     private MedianMaskFilter medianMaskWindow;
+    private HistogramFilter histogramFilterWindow;
 
     public ImageWindow() {
         super();
@@ -194,6 +197,19 @@ public class ImageWindow extends JPanel {
         });
 
         ////////////////////////////
+        JMenu windowsMenu = new JMenu("Windows");
+        menuBar.add(windowsMenu);
+
+        final JMenuItem histogramWindowItem = new JMenuItem("Histogram");
+        attachItem(histogramWindowItem, windowsMenu, new Runnable() {
+            @Override
+            public void run() {
+                if (imageEditor.getHistogramWindow() == null) {
+                    imageEditor.setHistogramWindow(new HistogramWindow(ImageWindow.this));
+                }
+            }
+        });
+        ///////////////////////////
         JMenu filterMenu = new JMenu("Filters");
         menuBar.add(filterMenu);
 
@@ -231,7 +247,7 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
-
+        /////////////////////////////////////////
         JMenu maskFilters = new JMenu("Mask Filters");
         filterMenu.add(maskFilters);
 
@@ -244,7 +260,7 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
-        
+
         JMenuItem medianMaskFilterItem = new JMenuItem("Median Mask Filter");
         attachItem(medianMaskFilterItem, maskFilters, new Runnable() {
             @Override
@@ -262,7 +278,7 @@ public class ImageWindow extends JPanel {
                 new SobelMaskFilter(ImageWindow.this);
             }
         });
-        
+
         JMenuItem highPassFilterItem = new JMenuItem("High-Pass Mask Filter");
 //        highPassFilterItem.setAccelerator(testStroke);
         attachItem(highPassFilterItem, maskFilters, new Runnable() {
@@ -271,6 +287,20 @@ public class ImageWindow extends JPanel {
                 new HighPassMaskFilter(ImageWindow.this);
             }
         });
+
+        JMenuItem histogramFilterItem = new JMenuItem("Histogram Filters");
+        histogramFilterItem.setAccelerator(testStroke);
+        attachItem(histogramFilterItem, filterMenu, new Runnable() {
+            @Override
+            public void run() {
+                histogramWindowItem.doClick();
+                if (getHistogramFilterWindow() == null) {
+                    setHistogramFilterWindow(new HistogramFilter(ImageWindow.this));
+                }
+            }
+        });
+
+        ////////////////////////////////////////////
     }
 
     private void attachItem(JMenuItem item, JMenu menu, Runnable runnable) {
@@ -384,5 +414,13 @@ public class ImageWindow extends JPanel {
 
     public void setMedianMaskWindow(MedianMaskFilter medianMaskWindow) {
         this.medianMaskWindow = medianMaskWindow;
+    }
+
+    public HistogramFilter getHistogramFilterWindow() {
+        return histogramFilterWindow;
+    }
+
+    public void setHistogramFilterWindow(HistogramFilter histogramFilterWindow) {
+        this.histogramFilterWindow = histogramFilterWindow;
     }
 }

@@ -1,5 +1,6 @@
 package grafika.gimp;
 
+import grafika.gimp.filtry.histogramy.HistogramWindow;
 import grafika.paint.History;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,7 +16,8 @@ public class ImageEditor extends JPanel {
     private BufferedImage previewImage;
     private LinkedList<History> undoImages = new LinkedList<>();
     private LinkedList<History> redoImages = new LinkedList<>();
-    private AffineTransform transform;
+
+    private HistogramWindow histogramWindow;
 
     public ImageEditor() {
         super();
@@ -52,6 +54,21 @@ public class ImageEditor extends JPanel {
     public void setPreviewImage(BufferedImage previewImage) {
         this.previewImage = previewImage;
         repaint();
+        updateHistogram();
+    }
+
+    public HistogramWindow getHistogramWindow() {
+        return histogramWindow;
+    }
+
+    public void setHistogramWindow(HistogramWindow histogramWindow) {
+        this.histogramWindow = histogramWindow;
+    }
+
+    public void updateHistogram() {
+        if (histogramWindow != null) {
+            histogramWindow.updateHistogram();
+        }
     }
 
     private class HistoryPop implements History {
@@ -102,6 +119,7 @@ public class ImageEditor extends JPanel {
         this.image = image;
         this.previewImage = null;
         repaint();
+        updateHistogram();
 
     }
 
@@ -116,6 +134,7 @@ public class ImageEditor extends JPanel {
             redoImages.addLast(p);
             p.undo();
             repaint();
+            updateHistogram();
         }
     }
 
@@ -125,6 +144,7 @@ public class ImageEditor extends JPanel {
             undoImages.addLast(p);
             p.redo();
             repaint();
+            updateHistogram();
         }
     }
 }

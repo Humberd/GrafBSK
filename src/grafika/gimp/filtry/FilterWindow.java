@@ -2,6 +2,9 @@ package grafika.gimp.filtry;
 
 import grafika.gimp.ImageEditor;
 import grafika.gimp.ImageWindow;
+import java.awt.Container;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -34,12 +37,19 @@ public abstract class FilterWindow extends JDialog {
 
     private BufferedImage innerPreviewImage;
 
-    public FilterWindow(String title, ImageWindow imageWindow) {
+    private boolean centerPosition;
+
+    public FilterWindow(String title, ImageWindow imageWindow, boolean centerPosition) {
         super();
         this.imageEditor = imageWindow.getImageEditor();
         this.imageWindow = imageWindow;
+        this.centerPosition = centerPosition;
         setTitle(title);
         init();
+    }
+
+    public FilterWindow(String title, ImageWindow imageWindow) {
+        this(title, imageWindow, true);
     }
 
     protected void init() {
@@ -112,15 +122,44 @@ public abstract class FilterWindow extends JDialog {
         setResizable(false);
         setAlwaysOnTop(true);
         pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        Container parent = imageWindow.getParent().getParent().getParent();
+        int width = getWidth();
+        int height = getHeight();
+        int parentX = parent.getLocationOnScreen().x;
+        int parentY = parent.getLocationOnScreen().y;
+        int parentWidth = parent.getWidth();
+        int parentHeight = parent.getHeight();
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int screenWidth = gd.getDisplayMode().getWidth();
+        int screenHeight = gd.getDisplayMode().getHeight();
+
+        int xPos = 0;
+        int yPos = 0;
+
+        if (centerPosition == true) {
+            yPos = (parentY + parentHeight) - height;
+        } else {
+            yPos = parentY;
+        }
         
+        if ((parentX + parentWidth) + width < screenWidth) {
+            xPos = parentX + parentWidth;
+        } else if (parentX - width > 0) {
+            xPos = parentX - width;
+        } else {
+            xPos = (parentX + parentWidth) - width;
+        }
+        setLocation(xPos, yPos);
+
+        setVisible(true);
+
         invokeAfterBuild();
     }
 
     protected abstract void customInit();
+
     protected void invokeAfterBuild() {
-        
+
     }
 
     public BufferedImage getImage() {
@@ -137,6 +176,10 @@ public abstract class FilterWindow extends JDialog {
 
     public void setInnerPreviewImage(BufferedImage innerPreviewImage) {
         this.innerPreviewImage = innerPreviewImage;
+    }
+
+    public BufferedImage getOuterPreviewImage() {
+        return imageEditor.getPreviewImage();
     }
 
     public void setOuterPreviewImage(BufferedImage outerPreviewImage) {
