@@ -3,6 +3,7 @@ package grafika.gimp;
 import grafika.file.extensions.JPEG.JPGextension;
 import grafika.file.extensions.PPM.PPMextension;
 import grafika.exceptions.FileException;
+import grafika.file.extensions.PNG.PNGextension;
 import grafika.gimp.filtry.BrightnessChangerFilter;
 import grafika.gimp.filtry.ColorChangerFilter;
 import grafika.gimp.filtry.GrayScaleChangerFilter;
@@ -68,7 +69,7 @@ public class ImageWindow extends JPanel {
 //            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
 //        }
         try {
-            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/lenaOriginal.jpg"));
+            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/lenna.png"));
             openedFile.openFile();
             imageEditor.pushNewImage(openedFile.getImage());
         } catch (FileException ex) {
@@ -116,6 +117,7 @@ public class ImageWindow extends JPanel {
                 JFileChooser fileChooser = new JFileChooser();
                 setFilter("ppm", fileChooser);
                 setFilter("jpg", fileChooser);
+                setFilter("png", fileChooser);
                 fileChooser.setAcceptAllFileFilterUsed(false);
                 fileChooser.setPreferredSize(new Dimension(500, 500));
                 int returnValue = fileChooser.showOpenDialog(null);
@@ -201,6 +203,8 @@ public class ImageWindow extends JPanel {
         menuBar.add(windowsMenu);
 
         final JMenuItem histogramWindowItem = new JMenuItem("Histogram");
+        KeyStroke ctrlH = KeyStroke.getKeyStroke("control H");
+        histogramWindowItem.setAccelerator(ctrlH);
         attachItem(histogramWindowItem, windowsMenu, new Runnable() {
             @Override
             public void run() {
@@ -319,7 +323,8 @@ public class ImageWindow extends JPanel {
         String filePath = file.getAbsolutePath();
         String[] fileExtensionTemp = fileName.split("\\.");
         String fileExtension = fileExtensionTemp[fileExtensionTemp.length - 1];
-
+        fileExtension = fileExtension.toLowerCase();
+        
         switch (fileExtension) {
             case "ppm":
                 openedFile = new PPMextension(filePath);
@@ -329,6 +334,9 @@ public class ImageWindow extends JPanel {
                 break;
             case "jpeg":
                 openedFile = new JPGextension(filePath);
+                break;
+            case "png":
+                openedFile = new PNGextension(filePath);
                 break;
             default:
                 throw new FileException("No class can handle extension \"" + fileExtension + "\"");
@@ -347,6 +355,8 @@ public class ImageWindow extends JPanel {
             case "jpeg":
                 fileType = new JPGextension(path);
                 break;
+            case "png":
+                fileType = new PNGextension(path);
             default:
                 throw new FileException("No class can handle extension \"" + extensionName + "\"");
         }
@@ -356,6 +366,9 @@ public class ImageWindow extends JPanel {
     private void setFilter(String filterName, JFileChooser chooser) {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("*." + filterName, filterName);
         chooser.addChoosableFileFilter(filter);
+        if (filterName.equals("png")) {
+            chooser.setFileFilter(filter);
+        }
 //        chooser.setFileFilter(filter);
     }
 
