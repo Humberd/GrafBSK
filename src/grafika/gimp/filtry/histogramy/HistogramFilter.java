@@ -37,7 +37,7 @@ public class HistogramFilter extends FilterWindow {
     public void filterImage() {
         BufferedImage baseImage = getImage();
         BufferedImage newImage = filterType.filterImage(baseImage);
-        
+
         setInnerPreviewImage(newImage);
         if (getPreviewImageCheckBox().isSelected()) {
             setOuterPreviewImage(newImage);
@@ -59,8 +59,8 @@ public class HistogramFilter extends FilterWindow {
         equalizeRadio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                filterType = new Equalize();
-//                filterImage();
+                filterType = new Equalize();
+                filterImage();
             }
         });
 
@@ -93,7 +93,7 @@ public class HistogramFilter extends FilterWindow {
         super.invokeAfterBuild(); //To change body of generated methods, choose Tools | Templates.
 //        widenRadio.doClick();
     }
-    
+
 }
 
 interface HistogramFilterType {
@@ -159,9 +159,9 @@ class Widen implements HistogramFilterType {
                     int red = pixelColor.getRed();
                     int green = pixelColor.getGreen();
                     int blue = pixelColor.getBlue();
-                    int newRed = (int) (((double)(red - redLowestValue) / (double)(redHighestValue - redLowestValue)) * 255);
-                    int newGreen = (int) (((double)(green - greenLowestValue) / (double)(greenHighestValue - greenLowestValue)) * 255);
-                    int newBlue = (int) (((double)(blue - blueLowestValue) / (double)(blueHighestValue - blueLowestValue)) * 255);
+                    int newRed = (int) (((double) (red - redLowestValue) / (double) (redHighestValue - redLowestValue)) * 255);
+                    int newGreen = (int) (((double) (green - greenLowestValue) / (double) (greenHighestValue - greenLowestValue)) * 255);
+                    int newBlue = (int) (((double) (blue - blueLowestValue) / (double) (blueHighestValue - blueLowestValue)) * 255);
                     newRed = validateColor(newRed);
                     newGreen = validateColor(newGreen);
                     newBlue = validateColor(newBlue);
@@ -178,7 +178,7 @@ class Widen implements HistogramFilterType {
         }
         return newImage;
     }
-    
+
     private int validateColor(int value) {
         if (value > 255) {
             return 255;
@@ -213,7 +213,95 @@ class Equalize implements HistogramFilterType {
 
     @Override
     public BufferedImage filterImage(final BufferedImage baseImage) {
-        return null;
+        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+        ExecutorService executor = Executors.newWorkStealingPool();
+
+        int[] reds = new int[256];
+        int[] greens = new int[256];
+        int[] blues = new int[256];
+
+        for (int tempy = 0; tempy < newImage.getHeight(); tempy++) {
+            int y = tempy;
+            executor.execute(() -> {
+                for (int x = 0; x < newImage.getWidth(); x++) {
+                    Color pixelColor = new Color(baseImage.getRGB(x, y));
+                    int red = pixelColor.getRed();
+                    int green = pixelColor.getGreen();
+                    int blue = pixelColor.getBlue();
+                    reds[red]++;
+                    greens[green]++;
+                    blues[blue]++;
+                }
+            });
+        }
+        executor.shutdown();
+        try {
+            executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SimpleThreadPool.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //////////////////////////////////
+        int imageSize = baseImage.getHeight() * baseImage.getWidth();
+
+        double[] redDistr = calculateDistribuant(reds, imageSize);
+        double[] greenDistr = calculateDistribuant(greens, imageSize);
+        double[] blueDistr = calculateDistribuant(blues, imageSize);
+
+        double minRedDistr = calculateMinDistrValue(redDistr);
+        double minGreenDistr = calculateMinDistrValue(greenDistr);
+        double minBlueDistr = calculateMinDistrValue(blueDistr);
+
+        int[] redLUT = new int[256];
+        int[] greenLUT = new int[256];
+        int[] blueLUT = new int[256];
+
+        double redNominator = -255 * minRedDistr;
+        double redDenominator = 1 - minRedDistr;
+        double greenNominator = -255 * minGreenDistr;
+        double greenDenominator = 1 - minGreenDistr;
+        double blueNominator = -255 * minBlueDistr;
+        double blueDenominator = 1 - minBlueDistr;
+        for (int p = 0; p < 256; p++) {
+            redLUT[p] = (int) (((255 * redDistr[p]) + redNominator) / redDenominator);
+            greenLUT[p] = (int) (((255 * greenDistr[p]) + greenNominator) / greenDenominator);
+            blueLUT[p] = (int) (((255 * blueDistr[p]) + blueNominator) / blueDenominator);
+        }
+
+        for (int y = 0; y < newImage.getHeight(); y++) {
+            for (int x = 0; x < newImage.getWidth(); x++) {
+                Color prevPixelColor = new Color(baseImage.getRGB(x, y));
+                int red = prevPixelColor.getRed();
+                int green = prevPixelColor.getGreen();
+                int blue = prevPixelColor.getBlue();
+                red = redLUT[red];
+                green = greenLUT[green];
+                blue = blueLUT[blue];
+                
+                Color newPixelColor = new Color(red, green, blue);
+                newImage.setRGB(x, y, newPixelColor.getRGB());
+            }
+        }
+
+        return newImage;
     }
 
+    private double calculateMinDistrValue(double[] tab) {
+        int n = 0;
+        while (tab[n] <= 0) {
+            n++;
+        }
+        return tab[n];
+    }
+
+    private double[] calculateDistribuant(int[] tab, int imageSize) {
+        double[] distr = new double[256];
+        double sum = 0;
+        for (int p = 0; p < 256; p++) {
+            sum += tab[p];
+            distr[p] = sum / imageSize;
+        }
+
+        return distr;
+    }
 }
