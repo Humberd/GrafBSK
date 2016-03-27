@@ -7,6 +7,7 @@ import grafika.file.extensions.PNG.PNGextension;
 import grafika.gimp.filtry.BrightnessChangerFilter;
 import grafika.gimp.filtry.ColorChangerFilter;
 import grafika.gimp.filtry.GrayScaleChangerFilter;
+import grafika.gimp.filtry.binarne.BinarizationWindow;
 import grafika.gimp.filtry.histogramy.HistogramFilter;
 import grafika.gimp.filtry.histogramy.HistogramWindow;
 import grafika.gimp.filtry.maski.AverageMaskFilter;
@@ -42,6 +43,7 @@ public class ImageWindow extends JPanel {
     private AverageMaskFilter averageMaskWindow;
     private MedianMaskFilter medianMaskWindow;
     private HistogramFilter histogramFilterWindow;
+    private BinarizationWindow binarizationWindow;
 
     public ImageWindow() {
         super();
@@ -293,13 +295,23 @@ public class ImageWindow extends JPanel {
         });
 
         JMenuItem histogramFilterItem = new JMenuItem("Histogram Filters");
-        histogramFilterItem.setAccelerator(testStroke);
         attachItem(histogramFilterItem, filterMenu, new Runnable() {
             @Override
             public void run() {
                 histogramWindowItem.doClick();
                 if (getHistogramFilterWindow() == null) {
                     setHistogramFilterWindow(new HistogramFilter(ImageWindow.this));
+                }
+            }
+        });
+        
+        JMenuItem binarizationItem = new JMenuItem("Binarization");
+        binarizationItem.setAccelerator(testStroke);
+        attachItem(binarizationItem, fileMenu, new Runnable() {
+            @Override
+            public void run() {
+                if (getBinarizationWindow() == null) {
+                    setBinarizationWindow(new BinarizationWindow(ImageWindow.this));
                 }
             }
         });
@@ -435,5 +447,13 @@ public class ImageWindow extends JPanel {
 
     public void setHistogramFilterWindow(HistogramFilter histogramFilterWindow) {
         this.histogramFilterWindow = histogramFilterWindow;
+    }
+
+    public BinarizationWindow getBinarizationWindow() {
+        return binarizationWindow;
+    }
+
+    public void setBinarizationWindow(BinarizationWindow binarizationWindow) {
+        this.binarizationWindow = binarizationWindow;
     }
 }
