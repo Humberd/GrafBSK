@@ -19,6 +19,11 @@ public class LinearFeedbackShiftRegister {
         if (selectedFlipFlops[0] <= 0) {
             throw new CipherException("All numbers of selected flip flops must be higher than 0");
         }
+        for (int val : seed) {
+            if (val != 0 && val != 1) {
+                throw new CipherException("Each seed value must be between 0 and 1");
+            }
+        }
         dffs = new Dflipflop[selectedFlipFlops[selectedFlipFlops.length - 1]];
 
         if (seed.length != dffs.length) {
@@ -38,7 +43,75 @@ public class LinearFeedbackShiftRegister {
         }
 
         this.selectedFlipFlops = selectedFlipFlops;
-        System.out.println(Arrays.toString(dffs));
+//        System.out.println(Arrays.toString(dffs));
+    }
+
+    public int[] cipherMessage(int[] message) {
+        int[] result = new int[message.length];
+        for (int i = 0; i < message.length; i++) {
+            clockTick();
+            result[i] = xor(dffs[0].getValue(), message[i]);
+        }
+        return result;
+    }
+
+    public int[] cipherAutokeyMessage(int[] message) {
+        int[] result = new int[message.length];
+        for (int i = 0; i < message.length; i++) {
+            result[i] = clockTickCipherAutokey(message[i]);
+        }
+        return result;
+    }
+
+    private int clockTickCipherAutokey(int value) {
+        int[] valuesToXor = new int[selectedFlipFlops.length];
+
+        int counter = 0;
+        int valueToPush = dffs[0].getValue();
+
+        if (selectedFlipFlops[counter] == 0) {
+            valuesToXor[counter++] = valueToPush;
+        }
+        for (int i = 1; i < dffs.length; i++) {
+            valueToPush = dffs[i].pushValue(valueToPush);
+            if (selectedFlipFlops[counter] == i) {
+                valuesToXor[counter++] = valueToPush;
+            }
+        }
+        valueToPush = xor(valuesToXor);
+        valueToPush = xor(value, valueToPush);
+        dffs[0].pushValue(valueToPush);
+
+        return valueToPush;
+    }
+
+    public int[] decipherAutokeyMessage(int[] message) {
+        int[] result = new int[message.length];
+        for (int i = 0; i < message.length; i++) {
+            result[i] = clockTickDecipherAutokey(message[i]);
+        }
+        return result;
+    }
+
+    private int clockTickDecipherAutokey(int value) {
+        int[] valuesToXor = new int[selectedFlipFlops.length];
+
+        int counter = 0;
+        int valueToPush = dffs[0].getValue();
+
+        if (selectedFlipFlops[counter] == 0) {
+            valuesToXor[counter++] = valueToPush;
+        }
+        for (int i = 1; i < dffs.length; i++) {
+            valueToPush = dffs[i].pushValue(valueToPush);
+            if (selectedFlipFlops[counter] == i) {
+                valuesToXor[counter++] = valueToPush;
+            }
+        }
+        valueToPush = xor(valuesToXor);
+        dffs[0].pushValue(value);
+        valueToPush = xor(value, valueToPush);
+        return valueToPush;
     }
 
     public int clockTick() {
@@ -62,19 +135,19 @@ public class LinearFeedbackShiftRegister {
         return valueToPush;
     }
 
-    public int[] clockTick(int ticks) {
+    public int[] clockTicks(int ticks) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         int[] results = new int[ticks];
         for (int i = 0; i < ticks; i++) {
             int tempI = i;
             executor.submit(() -> {
                 results[tempI] = clockTick();
-                System.out.println(Arrays.toString(results));
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(LinearFeedbackShiftRegister.class.getName()).log(Level.SEVERE, null, ex);
-                }
+//                System.out.println(Arrays.toString(results));
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException ex) {
+//                    Logger.getLogger(LinearFeedbackShiftRegister.class.getName()).log(Level.SEVERE, null, ex);
+//                }
             });
         }
         executor.shutdown();
@@ -101,8 +174,8 @@ public class LinearFeedbackShiftRegister {
         return result;
     }
 
-    public static void main(String[] args) throws CipherException {
-        LinearFeedbackShiftRegister sh = new LinearFeedbackShiftRegister(new int[]{1, 4}, new int[]{1, 0, 0, 1});
-        sh.clockTick(10);
-    }
+//    public static void main(String[] args) throws CipherException {
+//        LinearFeedbackShiftRegister sh = new LinearFeedbackShiftRegister(new int[]{1, 4}, new int[]{1, 0, 0, 1});
+//        System.out.println(Arrays.toString(sh.clockTicks(10)));
+//    }
 }

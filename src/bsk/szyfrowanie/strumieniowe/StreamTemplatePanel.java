@@ -1,7 +1,10 @@
-package bsk.szyfrowanie.transpozycja;
+package bsk.szyfrowanie.strumieniowe;
 
 import bsk.exceptions.CipherException;
+import bsk.szyfrowanie.transpozycja.Cipher;
+import bsk.szyfrowanie.transpozycja.TemplatePanel;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,34 +21,62 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.JTextComponent;
 
-public class TemplatePanel extends JPanel {
+public class StreamTemplatePanel extends JPanel {
 
     private JLabel pageTitle = new JLabel();
 
-    private JLabel keyOutputLabel = new JLabel("Key:");
+    private JLabel polynomialOutputLabel = new JLabel("Polynomial:");
+    private JLabel seedOutputLabel = new JLabel("Seed:");
     private JLabel messageOutputLabel = new JLabel("Message:");
+    private JLabel lengthOutputLabel = new JLabel("Length:");
     private JLabel resultOutputLabel = new JLabel("Result:");
+    private JLabel polynomialInputLabel = new JLabel("Polynomial:");
+    private JLabel seedInputLabel = new JLabel("Seed:");
     private JLabel messageInputLabel = new JLabel("Message:");
-    private JLabel keyInputLabel = new JLabel("Key:");
+    private JLabel lengthInputLabel = new JLabel("Length:");
 
-    private JTextArea keyOutput = new JTextArea();
+//    private JLabel keyOutputLabel = new JLabel("Key:");
+//    private JLabel messageOutputLabel = new JLabel("Message:");
+////    private JLabel resultOutputLabel = new JLabel("Result:");
+//    private JLabel messageInputLabel = new JLabel("Message:");
+//    private JLabel keyInputLabel = new JLabel("Key:");
+    private JTextArea polynomialOutput = new JTextArea();
+    private JTextArea seedOutput = new JTextArea();
     private JTextArea messageOutput = new JTextArea();
+    private JTextArea lengthOutput = new JTextArea();
     private JTextArea resultOutput = new JTextArea();
 
-    private JTextField messageInput = new JTextField();
-    private JTextField keyInput = new JTextField();
+//    private JTextArea keyOutput = new JTextArea();
+//    private JTextArea messageOutput = new JTextArea();
+//    private JTextArea resultOutput = new JTextArea();
+    private JTextField polynomialInput = new JTextField("");
+    private JTextField seedInput = new JTextField("");
+    private JTextField messageInput = new JTextField("");
+    private JTextField lengthInput = new JTextField("");
 
+//    private JTextField messageInput = new JTextField("");
+//    private JTextField keyInput = new JTextField("");
+    private JButton polynomialInputPasteButton = new JButton("Paste");
+    private JButton seedInputPasteButton = new JButton("Paste");
     private JButton messageInputPasteButton = new JButton("Paste");
+    private JButton lengthInputPasteButton = new JButton("Paste");
 
-    private JButton keyOutputCopyButton = new JButton("Copy");
+//    private JButton messageInputPasteButton = new JButton("Paste");
+    private JButton polynomialOutputCopyButton = new JButton("Copy");
+    private JButton seedOutputCopyButton = new JButton("Copy");
     private JButton messageOutputCopyButton = new JButton("Copy");
+    private JButton lengthOutputCopyButton = new JButton("Copy");
     private JButton resultOutputCopyButton = new JButton("Copy");
 
+//    private JButton keyOutputCopyButton = new JButton("Copy");
+//    private JButton messageOutputCopyButton = new JButton("Copy");
+//    private JButton resultOutputCopyButton = new JButton("Copy");
     private JButton encryptButton = new JButton("Encrypt");
     private JButton decryptButton = new JButton("Decrypt");
 
@@ -54,23 +85,30 @@ public class TemplatePanel extends JPanel {
     private JPanel inputPanel = new JPanel();
     private JPanel actionPanel = new JPanel();
 
-    private Cipher cipher;
+    private StreamCipher cipher;
 
-    public TemplatePanel(Cipher cipher) {
+    public StreamTemplatePanel(StreamCipher cipher) {
         super();
         this.cipher = cipher;
         pageTitle.setText(cipher.getCipherName());
         setName(cipher.getCipherName());
+        polynomialInput.setText(cipher.getTemplatePolynomial());
+        seedInput.setText(cipher.getTemplateSeed());
         messageInput.setText(cipher.getTemplateMessage());
-        keyInput.setText(cipher.getTemplateKey());
+        lengthInput.setText(cipher.getTemplateLength());
 
         addMainPanels();
 
-        attachCopyButton(keyOutputCopyButton, keyOutput);
+        attachCopyButton(polynomialOutputCopyButton, polynomialOutput);
+        attachCopyButton(seedOutputCopyButton, seedOutput);
         attachCopyButton(messageOutputCopyButton, messageOutput);
+        attachCopyButton(lengthOutputCopyButton, lengthOutput);
         attachCopyButton(resultOutputCopyButton, resultOutput);
 
+        attachPasteButton(polynomialInputPasteButton, polynomialInput);
+        attachPasteButton(seedInputPasteButton, seedInput);
         attachPasteButton(messageInputPasteButton, messageInput);
+        attachPasteButton(lengthInputPasteButton, lengthInput);
 
         attachActionButtons();
     }
@@ -144,12 +182,18 @@ public class TemplatePanel extends JPanel {
         c.insets = new Insets(0, 10, 0, 10);
         c.gridx = 0;
         c.gridy = 0;
-        resultPanel.add(keyOutputLabel, c);
+        resultPanel.add(polynomialOutputLabel, c);
         c.gridx = 0;
         c.gridy = 1;
-        resultPanel.add(messageOutputLabel, c);
+        resultPanel.add(seedOutputLabel, c);
         c.gridx = 0;
         c.gridy = 2;
+        resultPanel.add(messageOutputLabel, c);
+        c.gridx = 0;
+        c.gridy = 3;
+        resultPanel.add(lengthOutputLabel, c);
+        c.gridx = 0;
+        c.gridy = 4;
         resultPanel.add(resultOutputLabel, c);
 
         c.anchor = GridBagConstraints.LINE_START;
@@ -158,21 +202,37 @@ public class TemplatePanel extends JPanel {
         c.weightx = 0.5;
         c.gridx = 1;
         c.gridy = 0;
-        keyOutput.setEditable(false);
-        keyOutput.setLineWrap(true);
-        keyOutput.setMargin(new Insets(5, 5, 5, 5));
-        resultPanel.add(keyOutput, c);
+        polynomialOutput.setEditable(false);
+        polynomialOutput.setLineWrap(true);
+        polynomialOutput.setMargin(new Insets(5, 5, 5, 5));
+        resultPanel.add(polynomialOutput, c);
         c.gridx = 1;
         c.gridy = 1;
+        seedOutput.setEditable(false);
+        seedOutput.setLineWrap(true);
+        seedOutput.setMargin(new Insets(5, 5, 5, 5));
+        resultPanel.add(seedOutput, c);
+        c.gridx = 1;
+        c.gridy = 2;
         messageOutput.setEditable(false);
         messageOutput.setLineWrap(true);
         messageOutput.setMargin(new Insets(5, 5, 5, 5));
         resultPanel.add(messageOutput, c);
         c.gridx = 1;
-        c.gridy = 2;
+        c.gridy = 3;
+        lengthOutput.setEditable(false);
+        lengthOutput.setLineWrap(true);
+        lengthOutput.setMargin(new Insets(5, 5, 5, 5));
+        resultPanel.add(lengthOutput, c);
+        c.gridx = 1;
+        c.gridy = 4;
         resultOutput.setEditable(false);
         resultOutput.setLineWrap(true);
         resultOutput.setMargin(new Insets(5, 5, 5, 5));
+//        JScrollPane scrollPane = new JScrollPane(resultOutput);
+//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//        scrollPane.setMaximumSize(new Dimension(400, 300));
+//        scrollPane.setWheelScrollingEnabled(true);
         resultPanel.add(resultOutput, c);
 
         c.fill = GridBagConstraints.NONE;
@@ -181,14 +241,19 @@ public class TemplatePanel extends JPanel {
         c.weightx = 0.2;
         c.gridx = 2;
         c.gridy = 0;
-        resultPanel.add(keyOutputCopyButton, c);
+        resultPanel.add(polynomialOutputCopyButton, c);
         c.gridx = 2;
         c.gridy = 1;
-        resultPanel.add(messageOutputCopyButton, c);
+        resultPanel.add(seedOutputCopyButton, c);
         c.gridx = 2;
         c.gridy = 2;
+        resultPanel.add(messageOutputCopyButton, c);
+        c.gridx = 2;
+        c.gridy = 3;
+        resultPanel.add(lengthOutputCopyButton, c);
+        c.gridx = 2;
+        c.gridy = 4;
         resultPanel.add(resultOutputCopyButton, c);
-
     }
 
     private void setInputPanel(JPanel inputPanel) {
@@ -200,10 +265,16 @@ public class TemplatePanel extends JPanel {
         c.insets = new Insets(0, 10, 0, 10);
         c.gridx = 0;
         c.gridy = 0;
-        inputPanel.add(messageInputLabel, c);
+        inputPanel.add(polynomialInputLabel, c);
         c.gridx = 0;
         c.gridy = 1;
-        inputPanel.add(keyInputLabel, c);
+        inputPanel.add(seedInputLabel, c);
+        c.gridx = 0;
+        c.gridy = 2;
+        inputPanel.add(messageInputLabel, c);
+        c.gridx = 0;
+        c.gridy = 3;
+        inputPanel.add(lengthInputLabel, c);
 
         c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -211,10 +282,16 @@ public class TemplatePanel extends JPanel {
         c.weightx = 0.9;
         c.gridx = 1;
         c.gridy = 0;
-        inputPanel.add(messageInput, c);
+        inputPanel.add(polynomialInput, c);
         c.gridx = 1;
         c.gridy = 1;
-        inputPanel.add(keyInput, c);
+        inputPanel.add(seedInput, c);
+        c.gridx = 1;
+        c.gridy = 2;
+        inputPanel.add(messageInput, c);
+        c.gridx = 1;
+        c.gridy = 3;
+        inputPanel.add(lengthInput, c);
 
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.LINE_START;
@@ -222,7 +299,16 @@ public class TemplatePanel extends JPanel {
         c.weightx = 0.01;
         c.gridx = 2;
         c.gridy = 0;
+        inputPanel.add(polynomialInputPasteButton, c);
+        c.gridx = 2;
+        c.gridy = 1;
+        inputPanel.add(seedInputPasteButton, c);
+        c.gridx = 2;
+        c.gridy = 2;
         inputPanel.add(messageInputPasteButton, c);
+        c.gridx = 2;
+        c.gridy = 3;
+        inputPanel.add(lengthInputPasteButton, c);
     }
 
     private void setActionPanel(JPanel actionPanel) {
@@ -239,29 +325,6 @@ public class TemplatePanel extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         actionPanel.add(decryptButton, c);
-    }
-
-    public void setCorrectResult(String result) {
-        resultOutput.setBackground(new Color(82, 249, 132));
-        resultOutput.setText(result);
-    }
-
-    public void setErrorResult(String errorResult) {
-        resultOutput.setBackground(new Color(255, 111, 111));
-        resultOutput.setText(errorResult);
-    }
-
-    public void setKeyOutputText(String text) {
-        keyOutput.setText(text);
-    }
-
-    public void setMessageOutputText(String text) {
-        messageOutput.setText(text);
-    }
-
-    public void clearInputs() {
-        messageInput.setText("");
-        keyInput.setText("");
     }
 
     private void copyToClipboard(String text) {
@@ -302,7 +365,6 @@ public class TemplatePanel extends JPanel {
         } catch (Exception ex) {
             textComponent.setText("Cannot paste from the Clipboard");
         }
-
     }
 
     private void attachPasteButton(JButton button, JTextComponent textComponent) {
@@ -329,34 +391,55 @@ public class TemplatePanel extends JPanel {
         });
     }
 
+    public void setCorrectResult(String result) {
+        resultOutput.setBackground(new Color(82, 249, 132));
+        resultOutput.setText(result);
+    }
+
+    public void setErrorResult(String errorResult) {
+        resultOutput.setBackground(new Color(255, 111, 111));
+        resultOutput.setText(errorResult);
+    }
+
+    private void setActionButtonsEnabled(boolean enabled) {
+        encryptButton.setEnabled(enabled);
+        encryptButton.setEnabled(enabled);
+    }
+
     private void attachActionButtons() {
         attachActionButton(encryptButton, new Runnable() {
             @Override
             public void run() {
-                String message = getMessageInput().getText() != null ? getMessageInput().getText() : "";
-                String key = getKeyInput().getText() != null ? getKeyInput().getText() : "";
-                setMessageOutputText(message);
-                setKeyOutputText(key);
+                String polynomial = polynomialInput.getText() != null ? polynomialInput.getText() : "";
+                String seed = seedInput.getText() != null ? seedInput.getText() : "";
+                String key = messageInput.getText() != null ? messageInput.getText() : "";
+                String length = lengthInput.getText() != null ? lengthInput.getText() : "";
+                polynomialOutput.setText(polynomial);
+                seedOutput.setText(seed);
+                messageOutput.setText(key);
+                lengthOutput.setText(length);
                 try {
-                    setCorrectResult(getCipher().encrypt(message, key));
+                    setCorrectResult(cipher.encrypt(polynomial, seed, key, length));
                 } catch (CipherException ex) {
                     setErrorResult(ex.getMessage());
                 } catch (Exception ex) {
                     setErrorResult("Unknown Exception Error");
                 }
-
             }
-
         });
         attachActionButton(decryptButton, new Runnable() {
             @Override
             public void run() {
-                String message = getMessageInput().getText() != null ? getMessageInput().getText() : "";
-                String key = getKeyInput().getText() != null ? getKeyInput().getText() : "";
-                setMessageOutputText(message);
-                setKeyOutputText(key);
+                String polynomial = polynomialInput.getText() != null ? polynomialInput.getText() : "";
+                String seed = seedInput.getText() != null ? seedInput.getText() : "";
+                String key = messageInput.getText() != null ? messageInput.getText() : "";
+//                String length = lengthInput.getText() != null ? lengthInput.getText() : "";
+                polynomialOutput.setText(polynomial);
+                seedOutput.setText(seed);
+                messageOutput.setText(key);
+//                lengthOutput.setText(length);
                 try {
-                    setCorrectResult(getCipher().decrypyt(message, key));
+                    setCorrectResult(cipher.decrypt(polynomial, seed, key));
                 } catch (CipherException ex) {
                     setErrorResult(ex.getMessage());
                 } catch (Exception ex) {
@@ -384,161 +467,6 @@ public class TemplatePanel extends JPanel {
 
                 setActionButtonsEnabled(true);
             }
-
         });
     }
-
-    private void setActionButtonsEnabled(boolean enabled) {
-        encryptButton.setEnabled(enabled);
-        encryptButton.setEnabled(enabled);
-    }
-
-    public JTextField getMessageInput() {
-        return messageInput;
-    }
-
-    public void setMessageInput(JTextField messageInput) {
-        this.messageInput = messageInput;
-    }
-
-    public JTextField getKeyInput() {
-        return keyInput;
-    }
-
-    public void setKeyInput(JTextField keyInput) {
-        this.keyInput = keyInput;
-    }
-
-    public Cipher getCipher() {
-        return cipher;
-    }
-
-    public void setCipher(Cipher cipher) {
-        this.cipher = cipher;
-    }
-
-    public JLabel getPageTitle() {
-        return pageTitle;
-    }
-
-    public void setPageTitle(JLabel pageTitle) {
-        this.pageTitle = pageTitle;
-    }
-
-    public JLabel getKeyOutputLabel() {
-        return keyOutputLabel;
-    }
-
-    public void setKeyOutputLabel(JLabel keyOutputLabel) {
-        this.keyOutputLabel = keyOutputLabel;
-    }
-
-    public JLabel getMessageOutputLabel() {
-        return messageOutputLabel;
-    }
-
-    public void setMessageOutputLabel(JLabel messageOutputLabel) {
-        this.messageOutputLabel = messageOutputLabel;
-    }
-
-    public JLabel getResultOutputLabel() {
-        return resultOutputLabel;
-    }
-
-    public void setResultOutputLabel(JLabel resultOutputLabel) {
-        this.resultOutputLabel = resultOutputLabel;
-    }
-
-    public JLabel getMessageInputLabel() {
-        return messageInputLabel;
-    }
-
-    public void setMessageInputLabel(JLabel messageInputLabel) {
-        this.messageInputLabel = messageInputLabel;
-    }
-
-    public JLabel getKeyInputLabel() {
-        return keyInputLabel;
-    }
-
-    public void setKeyInputLabel(JLabel keyInputLabel) {
-        this.keyInputLabel = keyInputLabel;
-    }
-
-    public JTextArea getKeyOutput() {
-        return keyOutput;
-    }
-
-    public void setKeyOutput(JTextArea keyOutput) {
-        this.keyOutput = keyOutput;
-    }
-
-    public JTextArea getMessageOutput() {
-        return messageOutput;
-    }
-
-    public void setMessageOutput(JTextArea messageOutput) {
-        this.messageOutput = messageOutput;
-    }
-
-    public JTextArea getResultOutput() {
-        return resultOutput;
-    }
-
-    public void setResultOutput(JTextArea resultOutput) {
-        this.resultOutput = resultOutput;
-    }
-
-    public JButton getMessageInputPasteButton() {
-        return messageInputPasteButton;
-    }
-
-    public void setMessageInputPasteButton(JButton messageInputPasteButton) {
-        this.messageInputPasteButton = messageInputPasteButton;
-    }
-
-    public JButton getKeyOutputCopyButton() {
-        return keyOutputCopyButton;
-    }
-
-    public void setKeyOutputCopyButton(JButton keyOutputCopyButton) {
-        this.keyOutputCopyButton = keyOutputCopyButton;
-    }
-
-    public JButton getMessageOutputCopyButton() {
-        return messageOutputCopyButton;
-    }
-
-    public void setMessageOutputCopyButton(JButton messageOutputCopyButton) {
-        this.messageOutputCopyButton = messageOutputCopyButton;
-    }
-
-    public JButton getResultOutputCopyButton() {
-        return resultOutputCopyButton;
-    }
-
-    public void setResultOutputCopyButton(JButton resultOutputCopyButton) {
-        this.resultOutputCopyButton = resultOutputCopyButton;
-    }
-
-    public JButton getEncryptButton() {
-        return encryptButton;
-    }
-
-    public void setEncryptButton(JButton encryptButton) {
-        this.encryptButton = encryptButton;
-    }
-
-    public JButton getDecryptButton() {
-        return decryptButton;
-    }
-
-    public void setDecryptButton(JButton decryptButton) {
-        this.decryptButton = decryptButton;
-    }
-    
-    public JPanel getInputPanel() {
-        return inputPanel;
-    }
-
 }

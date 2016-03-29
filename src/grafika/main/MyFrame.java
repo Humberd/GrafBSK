@@ -1,5 +1,9 @@
 package grafika.main;
 
+import bsk.szyfrowanie.strumieniowe.CiphertextAutokeyBridge;
+import bsk.szyfrowanie.strumieniowe.LinearFeedbackShiftRegisterBridge;
+import bsk.szyfrowanie.strumieniowe.StreamTemplatePanel;
+import bsk.szyfrowanie.strumieniowe.SynchronousStreamCipherBridge;
 import bsk.szyfrowanie.transpozycja.Caesar;
 import bsk.szyfrowanie.transpozycja.MatrixTransposition1;
 import bsk.szyfrowanie.transpozycja.MatrixTransposition2;
@@ -26,6 +30,7 @@ public class MyFrame extends JFrame {
     private Container frameContainer;
     private Map<JMenuItem, JPanel> programsMap = new LinkedHashMap<>();
     private Map<JMenuItem, JPanel> bskZad1Map = new LinkedHashMap<>();
+    private Map<JMenuItem, JPanel> bskZad2Map = new LinkedHashMap<>();
     private Map<JMenuItem, JPanel> testMap = new LinkedHashMap<>();
 
     public MyFrame() {
@@ -104,7 +109,7 @@ public class MyFrame extends JFrame {
                 System.out.println("BSK: Transposition: Caesar");
             }
         });
-        
+
         menuItem2 = addMenuItem(false, new JMenuItem("6. Vigenere"), new TemplatePanel(new Vigenere()), bskZad1Map, new Runnable() {
             @Override
             public void run() {
@@ -112,12 +117,37 @@ public class MyFrame extends JFrame {
             }
         });
 
-        JMenu menu3 = new JMenu("Test");
+        JMenu menu2Zad2 = new JMenu("2. Stream");
+        menu2.add(menu2Zad2);
         
+        menuItem2 = addMenuItem(false, new JMenuItem("1. Generator LFSR"), new StreamTemplatePanel(new LinearFeedbackShiftRegisterBridge()), bskZad2Map, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("BSK: Stream: Linear Feedbacl ShiftRegister");
+            }
+        });
+        
+        menuItem2 = addMenuItem(true, new JMenuItem("2. Synchronous Stream Cipher"), new StreamTemplatePanel(new SynchronousStreamCipherBridge()), bskZad2Map, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("BSK: Stream: Synchronous Stream Cipher");
+            }
+        });
+        
+        menuItem2 = addMenuItem(true, new JMenuItem("3. Ciphertext Autokey"), new StreamTemplatePanel(new CiphertextAutokeyBridge()),bskZad2Map, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("BSK: Stream: Ciphertext Autokey");
+            }
+        });
+
+        ///////////////////////
+        JMenu menu3 = new JMenu("Test");
+
         JMenuItem menuItem3 = addMenuItem(false, new JMenuItem("ObserverTest"), new Test(), testMap, new Runnable() {
             @Override
             public void run() {
-                
+
             }
         });
         //////////////////////////////////
@@ -125,6 +155,7 @@ public class MyFrame extends JFrame {
         attachMenuItems(programsMap, menu);
         attachMenuItems(bskZad1Map, menu2Zad1);
         attachMenuItems(testMap, menu3);
+        attachMenuItems(bskZad2Map, menu2Zad2);
         //dolaczam menu do menuBar
         menuBar.add(menu);
         menuBar.add(menu2);
@@ -211,6 +242,14 @@ public class MyFrame extends JFrame {
 
     public void setBskZad1Map(Map<JMenuItem, JPanel> bskZad1Map) {
         this.bskZad1Map = bskZad1Map;
+    }
+
+    public Map<JMenuItem, JPanel> getBskZad2Map() {
+        return bskZad2Map;
+    }
+
+    public void setBskZad2Map(Map<JMenuItem, JPanel> bskZad2Map) {
+        this.bskZad2Map = bskZad2Map;
     }
 
 }
