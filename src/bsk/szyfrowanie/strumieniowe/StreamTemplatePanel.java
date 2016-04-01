@@ -1,7 +1,7 @@
 package bsk.szyfrowanie.strumieniowe;
 
 import bsk.exceptions.CipherException;
-import bsk.szyfrowanie.transpozycja.Cipher;
+import bsk.file.extensions.BIN.BinaryFileReader;
 import bsk.szyfrowanie.transpozycja.TemplatePanel;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,12 +19,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.JTextComponent;
 
 public class StreamTemplatePanel extends JPanel {
@@ -79,11 +81,17 @@ public class StreamTemplatePanel extends JPanel {
 //    private JButton resultOutputCopyButton = new JButton("Copy");
     private JButton encryptButton = new JButton("Encrypt");
     private JButton decryptButton = new JButton("Decrypt");
+    private JButton importMessageButton = new JButton("Import Message");
+    private JButton exportResultButton = new JButton("Export Result");
+    private JButton compareFilesButton = new JButton("Compare Files");
 
     private JPanel titlePanel = new JPanel();
     private JPanel resultPanel = new JPanel();
     private JPanel inputPanel = new JPanel();
     private JPanel actionPanel = new JPanel();
+
+    private String resultOutputString;
+    private String messageOutputString;
 
     private StreamCipher cipher;
 
@@ -101,9 +109,19 @@ public class StreamTemplatePanel extends JPanel {
 
         attachCopyButton(polynomialOutputCopyButton, polynomialOutput);
         attachCopyButton(seedOutputCopyButton, seedOutput);
-        attachCopyButton(messageOutputCopyButton, messageOutput);
+        attachCopyButton(messageOutputCopyButton, messageOutput, new Runnable() {
+            @Override
+            public void run() {
+                copyToClipboard(messageOutputString);
+            }
+        });
         attachCopyButton(lengthOutputCopyButton, lengthOutput);
-        attachCopyButton(resultOutputCopyButton, resultOutput);
+        attachCopyButton(resultOutputCopyButton, resultOutput, new Runnable() {
+            @Override
+            public void run() {
+                copyToClipboard(resultOutputString);
+            }
+        });
 
         attachPasteButton(polynomialInputPasteButton, polynomialInput);
         attachPasteButton(seedInputPasteButton, seedInput);
@@ -318,12 +336,22 @@ public class StreamTemplatePanel extends JPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0.5;
         c.weightx = 0.5;
-        c.insets = new Insets(10, 10, 10, 10);
+        c.insets = new Insets(5, 10, 5, 10);
+
+        JPanel filePanel = new JPanel();
+        filePanel.add(importMessageButton);
+        filePanel.add(exportResultButton);
+        filePanel.add(compareFilesButton);
         c.gridx = 0;
         c.gridy = 0;
+        c.gridwidth = 2;
+        actionPanel.add(filePanel, c);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 1;
         actionPanel.add(encryptButton, c);
         c.gridx = 1;
-        c.gridy = 0;
+        c.gridy = 1;
         actionPanel.add(decryptButton, c);
     }
 
@@ -333,16 +361,12 @@ public class StreamTemplatePanel extends JPanel {
         clipboard.setContents(stringSelection, null);
     }
 
-    private void attachCopyButton(JButton button, JTextComponent textComponent) {
+    private void attachCopyButton(JButton button, JTextComponent textComponent, Runnable runnable) {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 button.setEnabled(false);
 
-                Thread th = new Thread(new Runnable() {
-                    public void run() {
-                        copyToClipboard(textComponent.getText());
-                    }
-                });
+                Thread th = new Thread(runnable);
 
                 th.start();
                 try {
@@ -353,6 +377,15 @@ public class StreamTemplatePanel extends JPanel {
                 button.setEnabled(true);
             }
 
+        });
+    }
+
+    private void attachCopyButton(JButton button, JTextComponent textComponent) {
+        attachCopyButton(button, textComponent, new Runnable() {
+            @Override
+            public void run() {
+                copyToClipboard(textComponent.getText());
+            }
         });
     }
 
@@ -393,7 +426,21 @@ public class StreamTemplatePanel extends JPanel {
 
     public void setCorrectResult(String result) {
         resultOutput.setBackground(new Color(82, 249, 132));
-        resultOutput.setText(result);
+        String printResult = result;
+        resultOutputString = result;
+        if (result.length() > 250) {
+            printResult = result.substring(0, 250) + "...";
+        }
+        resultOutput.setText(printResult);
+    }
+
+    public void setMessageOutputString(String message) {
+        messageOutputString = message;
+        String printMessage = message;
+        if (message.length() > 50) {
+            printMessage = message.substring(0, 50) + "...";
+        }
+        messageOutput.setText(printMessage);
     }
 
     public void setErrorResult(String errorResult) {
@@ -416,8 +463,10 @@ public class StreamTemplatePanel extends JPanel {
                 String length = lengthInput.getText() != null ? lengthInput.getText() : "";
                 polynomialOutput.setText(polynomial);
                 seedOutput.setText(seed);
-                messageOutput.setText(key);
+                //strasznie duzo czasu zabiera
+                setMessageOutputString(key);
                 lengthOutput.setText(length);
+
                 try {
                     setCorrectResult(cipher.encrypt(polynomial, seed, key, length));
                 } catch (CipherException ex) {
@@ -436,7 +485,7 @@ public class StreamTemplatePanel extends JPanel {
 //                String length = lengthInput.getText() != null ? lengthInput.getText() : "";
                 polynomialOutput.setText(polynomial);
                 seedOutput.setText(seed);
-                messageOutput.setText(key);
+                setMessageOutputString(key);
 //                lengthOutput.setText(length);
                 try {
                     setCorrectResult(cipher.decrypt(polynomial, seed, key));
@@ -446,7 +495,60 @@ public class StreamTemplatePanel extends JPanel {
                     setErrorResult("Unknown Exception Error");
                 }
             }
+        });
 
+        attachFileButton(importMessageButton, new Runnable() {
+            @Override
+            public void run() {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("*.bin", "bin");
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.setPreferredSize(new Dimension(500, 500));
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    String message = BinaryFileReader.read(fileChooser.getSelectedFile().getAbsolutePath());
+                    messageInput.setText(message);
+                }
+            }
+        });
+        attachFileButton(exportResultButton, new Runnable() {
+            @Override
+            public void run() {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("*.bin", "bin");
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.setPreferredSize(new Dimension(500, 500));
+                int returnValue = fileChooser.showSaveDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    BinaryFileReader.save(fileChooser.getSelectedFile().getAbsolutePath() + ".bin", resultOutputString);
+                }
+            }
+        });
+
+        attachFileButton(compareFilesButton, new Runnable() {
+            @Override
+            public void run() {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("*.bin", "bin");
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setMultiSelectionEnabled(true);
+                fileChooser.setPreferredSize(new Dimension(500, 500));
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    boolean theSame = BinaryFileReader.compareFiles(fileChooser.getSelectedFiles());
+
+                    if (theSame) {
+                        JOptionPane.showMessageDialog(StreamTemplatePanel.this, "Selected files are equal", "Files compare", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(StreamTemplatePanel.this, "Selected files are different", "Files compare", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                }
+            }
         });
     }
 
@@ -466,6 +568,15 @@ public class StreamTemplatePanel extends JPanel {
                 }
 
                 setActionButtonsEnabled(true);
+            }
+        });
+    }
+
+    private void attachFileButton(JButton button, Runnable runnable) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runnable.run();
             }
         });
     }

@@ -2,8 +2,6 @@ package grafika.gimp;
 
 import grafika.exceptions.FileException;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class FileType {
 

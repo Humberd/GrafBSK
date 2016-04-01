@@ -39,17 +39,25 @@ public class SynchronousStreamCipherBridge implements StreamCipher {
         seed = seed.replace(" ", "");
         int[] result = new int[seed.length()];
         for (int i = 0; i < seed.length(); i++) {
-            int value = 0;
-            try {
-                String foo = new String(new char[]{seed.charAt(i)});
-                value = Integer.parseInt(foo);
-            } catch (Exception ex) {
-                throw new CipherException("Cannot parse into the Integer");
-            }
-            if (value != 0 && value != 1) {
-                throw new CipherException("Each value must be between 0 and 1");
-            }
-            result[i] = value;
+                char x = seed.charAt(i);
+                if (x == '0') {
+                    result[i] = 0;
+                } else if (x == '1') {
+                    result[i] = 1;
+                } else {
+                    throw new CipherException("Parsing Error");
+                }
+//            int value = 0;
+//            try {
+//                String foo = new String(new char[]{seed.charAt(i)});
+//                value = Integer.parseInt(foo);
+//            } catch (Exception ex) {
+//                throw new CipherException("Cannot parse into the Integer");
+//            }
+//            if (value != 0 && value != 1) {
+//                throw new CipherException("Each value must be between 0 and 1");
+//            }
+//            result[i] = value;
         }
 
         return result;
@@ -66,11 +74,11 @@ public class SynchronousStreamCipherBridge implements StreamCipher {
 
         LinearFeedbackShiftRegister register = new LinearFeedbackShiftRegister(selectedFlipFlops, seeds);
         int[] cipheredMessage = register.cipherMessage(messages);
-        String result = "";
-        for (int i = 0; i < cipheredMessage.length; i++) {
-            result += cipheredMessage[i];
+        StringBuilder builder = new StringBuilder(cipheredMessage.length);
+        for (int i: cipheredMessage) {
+            builder.append(i);
         }
-        return result;
+        return builder.toString();
     }
 
     @Override

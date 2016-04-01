@@ -141,7 +141,7 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
-
+        
         JMenuItem saveFileItem = new JMenuItem("Save");
         KeyStroke ctrlS = KeyStroke.getKeyStroke("control S");
         saveFileItem.setAccelerator(ctrlS);
