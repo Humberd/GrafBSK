@@ -307,7 +307,7 @@ public class ImageWindow extends JPanel {
         
         JMenuItem binarizationItem = new JMenuItem("Binarization");
         binarizationItem.setAccelerator(testStroke);
-        attachItem(binarizationItem, fileMenu, new Runnable() {
+        attachItem(binarizationItem, filterMenu, new Runnable() {
             @Override
             public void run() {
                 if (getBinarizationWindow() == null) {

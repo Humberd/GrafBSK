@@ -49,7 +49,7 @@ public class BinaryFileReader {
         } catch (IOException ex) {
             Logger.getLogger(BinaryFileReader.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         StringBuilder resultBuilder = new StringBuilder(result.length);
         for (int res : result) {
             resultBuilder.append(res);

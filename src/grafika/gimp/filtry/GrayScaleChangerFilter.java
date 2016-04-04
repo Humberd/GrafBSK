@@ -30,7 +30,7 @@ public class GrayScaleChangerFilter extends FilterWindow {
 
     private void createNewImage() {
         BufferedImage baseImage = getImage();
-        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
         WritableRaster raster = newImage.getRaster();
         
@@ -42,7 +42,8 @@ public class GrayScaleChangerFilter extends FilterWindow {
                 int blue = prevPixelColor.getBlue();
 
                 int gray = filter.count(red, green, blue);
-                raster.setPixel(x, y,new int[] {gray});
+                newImage.setRGB(x, y, new Color(gray, gray, gray).getRGB());
+//                raster.setPixel(x, y,new int[] {gray});
             }
         }
 

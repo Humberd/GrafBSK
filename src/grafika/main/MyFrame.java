@@ -120,7 +120,7 @@ public class MyFrame extends JFrame {
         JMenu menu2Zad2 = new JMenu("2. Stream");
         menu2.add(menu2Zad2);
         
-        menuItem2 = addMenuItem(true, new JMenuItem("1. Generator LFSR"), new StreamTemplatePanel(new LinearFeedbackShiftRegisterBridge()), bskZad2Map, new Runnable() {
+        menuItem2 = addMenuItem(false, new JMenuItem("1. Generator LFSR"), new StreamTemplatePanel(new LinearFeedbackShiftRegisterBridge()), bskZad2Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Stream: Linear Feedbacl ShiftRegister");

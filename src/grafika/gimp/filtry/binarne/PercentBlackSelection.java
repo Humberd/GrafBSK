@@ -35,7 +35,7 @@ public class PercentBlackSelection implements BinarizationType {
                     int red = pixelColor.getRed();
                     int green = pixelColor.getGreen();
                     int blue = pixelColor.getBlue();
-                    int gray = (int) (0.21 * red + 0.72 * green + 0.07 * blue);
+                    int gray = (int) ((red+green+blue)/3);
                     grays[gray]++;
                 }
             });
@@ -51,7 +51,7 @@ public class PercentBlackSelection implements BinarizationType {
         for (int i = 0; i < grays.length; i++) {
             sum += grays[i];
             if (sum >= rightSide) {
-                System.out.println(i);
+//                System.out.println(i);
                 return i;
             }
         }

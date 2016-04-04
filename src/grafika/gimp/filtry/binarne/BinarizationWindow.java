@@ -51,7 +51,7 @@ public class BinarizationWindow extends FilterWindow {
 
     public void filterImage() {
         BufferedImage baseImage = getImage();
-        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
         int threshold = filterType.filterImage(baseImage);
 
@@ -66,13 +66,13 @@ public class BinarizationWindow extends FilterWindow {
                     int green = prevPixelColor.getGreen();
                     int blue = prevPixelColor.getBlue();
 
-                    int gray = (int) (0.21 * red + 0.72 * green + 0.07 * blue);
+                    int gray = (int) ((red+blue+green)/3);
 
                     int binaryColor = 0;
                     if (gray > threshold) {
                         binaryColor = 255;
                     }
-                    newImage.getRaster().setPixel(x, y, new int[]{binaryColor});
+                    newImage.setRGB(x, y, new Color (binaryColor, binaryColor, binaryColor).getRGB());
                 }
             });
             for (int x = 0; x < newImage.getWidth(); x++) {
@@ -131,6 +131,13 @@ public class BinarizationWindow extends FilterWindow {
             }
         });
         entropyRadio = new JRadioButton("Entropy Selection");
+        entropyRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filterType = new EntropySelection();
+                filterImage();
+            }
+        });
         minimumRadio = new JRadioButton("Minimum Error Selection");
         fuzzyRadio = new JRadioButton("Fuzzy Minimum Error Selection");
 
@@ -204,12 +211,12 @@ public class BinarizationWindow extends FilterWindow {
         c.gridx = 0;
         c.gridy = 5;
         add(entropyRadio, c);
-        c.gridx = 0;
-        c.gridy = 6;
-        add(minimumRadio, c);
-        c.gridx = 0;
-        c.gridy = 7;
-        add(fuzzyRadio, c);
+//        c.gridx = 0;
+//        c.gridy = 6;
+//        add(minimumRadio, c);
+//        c.gridx = 0;
+//        c.gridy = 7;
+//        add(fuzzyRadio, c);
     }
 
     @Override
@@ -220,7 +227,7 @@ public class BinarizationWindow extends FilterWindow {
     @Override
     protected void invokeAfterBuild() {
         super.invokeAfterBuild(); //To change body of generated methods, choose Tools | Templates.
-        meanRadio.doClick();
+        entropyRadio.doClick();
     }
 
 }
