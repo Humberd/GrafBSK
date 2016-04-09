@@ -1,23 +1,34 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package grafika.paint.transformacje;
 
-import grafika.paint.transformacje.Transformation;
+import grafika.exceptions.GraphicsException;
+import grafika.paint.DrawingPanel;
 import grafika.paint.figury.DrawingClass;
-import java.awt.Graphics2D;
+import grafika.paint.figury.Line;
+import grafika.paint.figury.Point;
+import java.awt.Color;
 
-/**
- *
- * @author Sawik
- */
-public class Rotate extends Transformation{
+public class Rotate extends Transformation {
+
+    public Rotate(DrawingPanel panel) {
+        super(panel);
+    }
 
     @Override
-    public int[] transform(int startX, int startY, int endX, int endY, Graphics2D g2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void transform() throws GraphicsException {
+//        if (getStage() == 0) {
+//
+//        } else if (getStage() == 1) {
+//            if (getHelperShape() == null) {
+////                Line line = new Line();
+////                line.setStarter(new Point(0, 0));
+////                line.setEnder(new Point(0, 0));
+////                line.setColor(Color.RED);
+////                setHelperShape(line);
+//            }
+//        }
+        Transformable tr = getTransformableDrawing();
+        DrawingClass curr = getCurrentDrawing();
+        tr.rotate(startPoint, angle);
     }
 
     @Override
@@ -26,19 +37,8 @@ public class Rotate extends Transformation{
     }
 
     @Override
-    public void transform(Graphics2D g2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void createWindow() {
+        setWindow(new RotateWindow(getDrawingPanel()));
     }
 
-    @Override
-    public void transform(DrawingClass drawingClass) {
-        int x = getCurrentX() - getStartX();
-        int y = getCurrentY() - getStartY();
-        
-        
-        
-        setStartX(getCurrentX());
-        setStartY(getCurrentY());
-    }
-    
 }

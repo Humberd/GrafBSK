@@ -55,14 +55,14 @@ public class MyFrame extends JFrame {
     private void addMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Computer Graphics");
-        JMenuItem menuItem = addMenuItem(false, new JMenuItem("1. Prymitywy"), new Prymitywy(), programsMap, new Runnable() {
+        JMenuItem menuItem = addMenuItem(true, new JMenuItem("1. Prymitywy"), new Prymitywy(), programsMap, new Runnable() {
             @Override
             public void run() {
                 System.out.println("11111");
             }
 
         });
-        menuItem = addMenuItem(true, new JMenuItem("2. PPM"), new ImageWindow(), programsMap, new Runnable() {
+        menuItem = addMenuItem(false, new JMenuItem("2. PPM"), new ImageWindow(), programsMap, new Runnable() {
             @Override
             public void run() {
                 System.out.println("22222");

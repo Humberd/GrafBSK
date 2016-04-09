@@ -5,25 +5,20 @@
  */
 package grafika.paint.transformacje;
 
-import grafika.paint.transformacje.Transformation;
+import grafika.exceptions.GraphicsException;
+import grafika.paint.DrawingPanel;
 import grafika.paint.figury.DrawingClass;
-import java.awt.Graphics2D;
+import grafika.paint.figury.Line;
+import grafika.paint.figury.Point;
 
 /**
  *
  * @author Sawik
  */
-public class Translate extends Transformation{
+public class Translate extends Transformation {
 
-    @Override
-    public int[] transform(int startX, int startY, int endX, int endY, Graphics2D g2) {
-        int[] coords = new int[4];
-        
-        
-        setStartX(getCurrentX());
-        setStartY(getCurrentY());
-        
-        return coords;
+    public Translate(DrawingPanel panel) {
+        super(panel);
     }
 
     @Override
@@ -31,25 +26,31 @@ public class Translate extends Transformation{
         return "Translate";
     }
 
+//    public void transform(DrawingClass drawingClass) {
+//        int x = getCurrentX() - getStartX();
+//        int y = getCurrentY() - getStartY();
+//        
+//        drawingClass.setStartX(drawingClass.getStartX()+x);
+//        drawingClass.setStartY(drawingClass.getStartY()+y);
+//        drawingClass.setCurrentX(drawingClass.getCurrentX()+x);
+//        drawingClass.setCurrentY(drawingClass.getCurrentY()+y);
+//        
+//        setStartX(getCurrentX());
+//        setStartY(getCurrentY());
+//    }
     @Override
-    public void transform(Graphics2D g2) {
-        int x = getCurrentX() - getStartX();
-        int y = getCurrentY() - getStartY();
-        g2.translate(x, y);
+    public void transform() throws GraphicsException {
+        Transformable tr = getTransformableDrawing();
+        DrawingClass curr = getCurrentDrawing();
+        Point vector;
+        int x = currentPoint.x - startPoint.x;
+        int y = currentPoint.y - startPoint.y;
+        vector = new Point(x, y);
+        tr.translate(vector);
     }
 
     @Override
-    public void transform(DrawingClass drawingClass) {
-        int x = getCurrentX() - getStartX();
-        int y = getCurrentY() - getStartY();
-        
-        drawingClass.setStartX(drawingClass.getStartX()+x);
-        drawingClass.setStartY(drawingClass.getStartY()+y);
-        drawingClass.setCurrentX(drawingClass.getCurrentX()+x);
-        drawingClass.setCurrentY(drawingClass.getCurrentY()+y);
-        
-        setStartX(getCurrentX());
-        setStartY(getCurrentY());
+    public void setStage(int stage) {
+        super.setStage(0);
     }
-    
 }

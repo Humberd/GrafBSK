@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -144,5 +145,34 @@ public class MedianMaskFilter extends FilterWindow {
     protected void invokeAfterBuild() {
         super.invokeAfterBuild();
         filterImage();
+    }
+
+    public static void main(String[] args) {
+        byte[] tabBytes = new byte[3];
+
+        for (int i = 0; i < tabBytes.length; i++) {
+            tabBytes[i] = (byte) (i + 20);
+        }
+
+        int[] intBytes = new int[tabBytes.length * 8];
+
+        for (int i = 0; i < tabBytes.length; i++) {
+            int tempValue = i * 8;
+            for (int j = 0; j < 8; j++) {
+                intBytes[tempValue+ 7-j] = tabBytes[i] & 1;
+                tabBytes[i] = (byte) (tabBytes[i] >> 1);
+            }
+        }
+        
+        System.out.println(Arrays.toString(intBytes));
+
+//        byte b = 0b1001;
+//        int[] tab = new int[4];
+//        int counter = tab.length - 1; //3
+//        for (int i = 0; i < 4; i++) {
+//            tab[counter --] = b & 1;
+//            b = (byte) (b>>1);
+//        }
+//        System.out.println(Arrays.toString(tab));
     }
 }

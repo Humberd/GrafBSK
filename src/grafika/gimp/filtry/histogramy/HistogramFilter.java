@@ -109,6 +109,7 @@ class Widen implements HistogramFilterType {
 
         ExecutorService executor = Executors.newWorkStealingPool();
 
+        //robie sobie histogram dla R, G, B - wielowatkowo
         int[] reds = new int[256];
         int[] greens = new int[256];
         int[] blues = new int[256];
@@ -134,6 +135,10 @@ class Widen implements HistogramFilterType {
             Logger.getLogger(SimpleThreadPool.class.getName()).log(Level.SEVERE, null, ex);
         }
         ////////////////////
+        //tutaj obliczam próg wartosci koloru w histogramie
+        //zalozmy sytuacje, ze w histogramie mam takie cos [1,0,0,0,0,0,.....,0,345,23,43,623,0,....,0,2]
+        //bez tego tego progu nie rozciagne histogramu, bo jest 1 pixel o kolorze 0 i 2 pixele o kolorze 255
+        //a dzieki temu progowi, traktuje takie male wartosci(1,2,3,...) jako 0, zeby moc rozciagnac histogram w pelni
         int imageSize = baseImage.getHeight() * baseImage.getWidth();
         int threshold = (int) ((imageSize / 256) * 0.01);
         if (threshold == 0) {
@@ -159,6 +164,7 @@ class Widen implements HistogramFilterType {
                     int red = pixelColor.getRed();
                     int green = pixelColor.getGreen();
                     int blue = pixelColor.getBlue();
+                    //obliczam wedlug wzorku
                     int newRed = (int) (((double) (red - redLowestValue) / (double) (redHighestValue - redLowestValue)) * 255);
                     int newGreen = (int) (((double) (green - greenLowestValue) / (double) (greenHighestValue - greenLowestValue)) * 255);
                     int newBlue = (int) (((double) (blue - blueLowestValue) / (double) (blueHighestValue - blueLowestValue)) * 255);

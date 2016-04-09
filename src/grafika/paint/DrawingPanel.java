@@ -2,6 +2,8 @@ package grafika.paint;
 
 import grafika.paint.transformacje.Transformation;
 import grafika.paint.figury.DrawingClass;
+import grafika.paint.figury.Point;
+import grafika.paint.transformacje.TransformationWindow;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -29,12 +31,16 @@ public class DrawingPanel extends JPanel {
     private boolean inRotateMode = false;
     private boolean inScaleMode = false;
     
+    private TransformationWindow transformationWindow;
+    
+    private MyAdapter myAdapter;
+
     private Color selectedColor;
 
     public DrawingPanel(Prymitywy prymitywy) {
         super();
         this.prymitywy = prymitywy;
-        MyAdapter myAdapter = new MyAdapter();
+        myAdapter = new MyAdapter();
         setCurrentDrawing(DrawingClass.getDefaultDrawingClass());
         setCurrentDrawingTemplate(DrawingClass.getDefaultDrawingClass());
         addMouseMotionListener(myAdapter);
@@ -66,26 +72,23 @@ public class DrawingPanel extends JPanel {
         for (DrawingClass drawing : drawingList) {
             drawing.draw(g2);
         }
-//        if (transformation != null) {
-//            transformation.transform(g2);
-//        }
+
         currentDrawing.draw(g2);
         if (isInEditMode()) {
-            prymitywy.updateEditValues(currentDrawing.getStartX(), currentDrawing.getStartY(), currentDrawing.getCurrentX(), currentDrawing.getCurrentY());
+            prymitywy.updateEditValues(currentDrawing.getStartPoint().x, currentDrawing.getStartPoint().y, currentDrawing.getCurrentPoint().x, currentDrawing.getCurrentPoint().y);
+        }
+        if (transformation != null) {
+            transformation.drawHelper(g2);
         }
     }
 
-    public void updateModelValues(int startX, int startY, int endX, int endY) {
-        currentDrawing.setStartX(startX);
-        currentDrawing.setStartY(startY);
-        currentDrawing.setCurrentX(endX);
-        currentDrawing.setCurrentY(endY);
+    public void setStartPoint(java.awt.Point p) {
+        currentDrawing.setStartPoint(Point.getPoint(p));
         repaint();
     }
 
-    public void updateModelValues(int endX, int endY) {
-        currentDrawing.setCurrentX(endX);
-        currentDrawing.setCurrentY(endY);
+    public void setCurrentPoint(java.awt.Point p) {
+        currentDrawing.setCurrentPoint(Point.getPoint(p));
         repaint();
     }
 
@@ -97,37 +100,52 @@ public class DrawingPanel extends JPanel {
         this.selectedColor = selectedColor;
     }
 
+    public MyAdapter getMyAdapter() {
+        return myAdapter;
+    }
+
+    public void setMyAdapter(MyAdapter myAdapter) {
+        this.myAdapter = myAdapter;
+    }
+
     private class MyAdapter extends MouseAdapter {
 
         @Override
         public void mouseDragged(MouseEvent e) {
+            java.awt.Point p = e.getPoint();
             if (transformation == null) {
-                updateModelValues(e.getX(), e.getY());
+                setCurrentPoint(p);
             } else {
-                transformation.setCurrentX(e.getX());
-                transformation.setCurrentY(e.getY());
-                transformation.transform(currentDrawing);
+                transformation.setCurrentPoint(p);
                 repaint();
             }
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
+            java.awt.Point p = e.getPoint();
             if (transformation == null) {
                 pushNewDrawing();
                 currentDrawing.setIsDrawing(true);
-                updateModelValues(e.getX(), e.getY(), e.getX(), e.getY());
+                setStartPoint(p);
+                setCurrentPoint(p);
             } else {
-                transformation.setStartX(e.getX());
-                transformation.setStartY(e.getY());
-                transformation.setCurrentX(e.getX());
-                transformation.setCurrentY(e.getY());
+                currentDrawing.setIsTransforming(true);
+                transformation.setStartPoint(p);
+                transformation.setCurrentPoint(p);
+                repaint();
             }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            currentDrawing.setIsDrawing(false);
+            java.awt.Point p = e.getPoint();
+            if (transformation == null) {
+                currentDrawing.setIsDrawing(false);
+            } else {
+                currentDrawing.setIsTransforming(false);
+                transformation.setEndPoint(p);
+            }
         }
 
     }
@@ -192,6 +210,7 @@ public class DrawingPanel extends JPanel {
             transformationModeLabel.setText(transformation.getName());
             transformationModeLabel.setVisible(true);
             this.transformation = transformation;
+            this.transformation.createWindow();
         }
     }
 
@@ -242,11 +261,6 @@ public class DrawingPanel extends JPanel {
     }
 
     public void pushNewDrawing(DrawingClass drawingClass) {
-//        if (isInEditMode() == false) {
-//            undoList.addLast(new HistoryPush(drawingClass));
-//            redoList.clear();
-//            drawingList.addLast(getCurrentDrawing());
-//        }
         undoList.addLast(new HistoryPush(drawingClass));
         redoList.clear();
         drawingList.addLast(getCurrentDrawing());
@@ -276,6 +290,16 @@ public class DrawingPanel extends JPanel {
             p.redo();
             repaint();
         }
+    }
+
+    private void addAdapterListener(MouseAdapter adapter) {
+        addMouseListener(adapter);
+        addMouseMotionListener(adapter);
+    }
+
+    private void removeAdapterListener(MouseAdapter adapter) {
+        removeMouseListener(adapter);
+        removeMouseMotionListener(adapter);
     }
 
 }

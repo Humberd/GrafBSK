@@ -160,4 +160,5 @@ public class BinaryFileReader {
 
         System.out.println(builder);
     }
+    
 }

@@ -81,6 +81,7 @@ public class LinearFeedbackShiftRegister {
         valueToPush = xor(valuesToXor);
         valueToPush = xor(value, valueToPush);
         dffs[0].pushValue(valueToPush);
+//        System.out.println(Arrays.toString(dffs));
 
         return valueToPush;
     }
@@ -131,7 +132,6 @@ public class LinearFeedbackShiftRegister {
         }
         valueToPush = xor(valuesToXor);
         dffs[0].pushValue(valueToPush);
-
         return valueToPush;
     }
 

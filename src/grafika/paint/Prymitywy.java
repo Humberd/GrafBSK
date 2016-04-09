@@ -4,19 +4,20 @@ import grafika.paint.colorPicker.ColorPicker;
 import grafika.paint.transformacje.Translate;
 import grafika.paint.figury.Rectangle;
 import grafika.paint.figury.Line;
-import grafika.paint.figury.Circle;
+import grafika.paint.transformacje.Rotate;
+import grafika.paint.transformacje.Scale;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -110,9 +111,10 @@ public class Prymitywy extends JPanel {
         JButton circleButton = addButton("Circle", figurePanel, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawingPanel.setCurrentDrawingTemplate(new Circle());
+//                drawingPanel.setCurrentDrawingTemplate(new Circle());
             }
         });
+        circleButton.setEnabled(false);
         JButton undoButton = addButton("Undo", modifyPanel, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -212,18 +214,21 @@ public class Prymitywy extends JPanel {
         translateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawingPanel.setTransformation(new Translate());
+                drawingPanel.setTransformation(new Translate(drawingPanel));
+//                drawingPanel.setTransformation(new Translate());
             }
         });
         rotateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                drawingPanel.setTransformation(new Rotate(drawingPanel));
 //               drawingPanel.setTransformation(new Rotate());
             }
         });
         scaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                drawingPanel.setTransformation(new Scale(drawingPanel));
 //               drawingPanel.setTransformation(new Scale());
             }
         });
@@ -259,7 +264,8 @@ public class Prymitywy extends JPanel {
             int startY = Integer.parseInt(startYInput.getText());
             int endX = Integer.parseInt(endXInput.getText());
             int endY = Integer.parseInt(endYInput.getText());
-            drawingPanel.updateModelValues(startX, startY, endX, endY);
+            drawingPanel.setStartPoint(new Point(startX, startY));
+            drawingPanel.setCurrentPoint(new Point(endX, endY));
         } catch (Exception e) {
             System.out.println("EXCEPTION");
         }

@@ -1,23 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package grafika.paint.transformacje;
 
-import grafika.paint.transformacje.Transformation;
+import grafika.exceptions.GraphicsException;
+import grafika.paint.DrawingPanel;
 import grafika.paint.figury.DrawingClass;
-import java.awt.Graphics2D;
 
-/**
- *
- * @author Sawik
- */
-public class Scale extends Transformation {
+public class Scale extends Transformation{
+
+    public Scale(DrawingPanel panel) {
+        super(panel);
+    }
 
     @Override
-    public int[] transform(int startX, int startY, int endX, int endY, Graphics2D g2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void transform() throws GraphicsException {
+        Transformable tr = getTransformableDrawing();
+        DrawingClass curr = getCurrentDrawing();
+        tr.scale(startPoint, scale);
     }
 
     @Override
@@ -26,16 +23,7 @@ public class Scale extends Transformation {
     }
 
     @Override
-    public void transform(Graphics2D g2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void createWindow() {
+        setWindow(new ScaleWindow(getDrawingPanel()));
     }
-    
-
-    @Override
-    public void transform(DrawingClass drawingClass) {
-        int xCenter = (drawingClass.getStartX() + drawingClass.getCurrentX()) / 2;
-        int yCenter = (drawingClass.getStartY() + drawingClass.getCurrentY()) / 2;
-
-    }
-
 }
