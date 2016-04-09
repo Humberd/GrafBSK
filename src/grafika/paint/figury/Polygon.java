@@ -117,18 +117,40 @@ public class Polygon extends DrawingClass implements Transformable {
 
     @Override
     public void translate(Point vector) {
-        for (int i = 0; i < vectors.length; i++) {
-            vectors[i] = vector;
+        if (vector != null) {
+            for (int i = 0; i < vectors.length; i++) {
+                vectors[i] = vector;
+            }
         }
     }
 
     @Override
     public void rotate(Point centerPoint, double angle) {
+        if (centerPoint != null) {
+            double angleToRadians = Math.toRadians(angle);
+            double sinAngle = Math.sin(angleToRadians);
+            double cosAngle = Math.cos(angleToRadians);
+            for (int i = 0; i < points.length; i++) {
+                int newX = (int) (centerPoint.x + (points[i].x - centerPoint.x) * cosAngle - (points[i].y - centerPoint.y) * sinAngle);
+                int newY = (int) (centerPoint.y + (points[i].x - centerPoint.x) * sinAngle + (points[i].y - centerPoint.y) * cosAngle);
+                vectors[i].x = newX - points[i].x;
+                vectors[i].y = newY - points[i].y;
+            }
+        }
         System.out.println(centerPoint + " / " + angle);
     }
 
     @Override
     public void scale(Point centerPoint, DoublePoint vector) {
+        if (centerPoint != null && vector != null) {
+            for (int i = 0; i < points.length; i++) {
+                int newX = (int) (points[i].x * vector.x + (1 - vector.x) * centerPoint.x);
+                int newY = (int) (points[i].y * vector.y + (1 - vector.y) * centerPoint.y);
+//                System.out.println(newX+"/"+newY);
+                vectors[i].x = newX - points[i].x;
+                vectors[i].y = newY - points[i].y;
+            }
+        }
         System.out.println(centerPoint + " / " + vector);
     }
 

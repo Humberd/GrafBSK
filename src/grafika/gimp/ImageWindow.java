@@ -70,13 +70,13 @@ public class ImageWindow extends JPanel {
 //        } catch (FileException ex) {
 //            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-        try {
-            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/lenna.png"));
-            openedFile.openFile();
-            imageEditor.pushNewImage(openedFile.getImage());
-        } catch (FileException ex) {
-            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/lenna.png"));
+//            openedFile.openFile();
+//            imageEditor.pushNewImage(openedFile.getImage());
+//        } catch (FileException ex) {
+//            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     private void addComponents() {

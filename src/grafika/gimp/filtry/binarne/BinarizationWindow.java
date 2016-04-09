@@ -51,44 +51,46 @@ public class BinarizationWindow extends FilterWindow {
 
     public void filterImage() {
         BufferedImage baseImage = getImage();
-        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        if (baseImage != null) {
+            BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
-        int threshold = filterType.filterImage(baseImage);
+            int threshold = filterType.filterImage(baseImage);
 
-        ExecutorService executor = Executors.newWorkStealingPool();
+            ExecutorService executor = Executors.newWorkStealingPool();
 
-        for (int tempy = 0; tempy < newImage.getHeight(); tempy++) {
-            int y = tempy;
-            executor.submit(() -> {
-                for (int x = 0; x < newImage.getWidth(); x++) {
-                    Color prevPixelColor = new Color(baseImage.getRGB(x, y));
-                    int red = prevPixelColor.getRed();
-                    int green = prevPixelColor.getGreen();
-                    int blue = prevPixelColor.getBlue();
+            for (int tempy = 0; tempy < newImage.getHeight(); tempy++) {
+                int y = tempy;
+                executor.submit(() -> {
+                    for (int x = 0; x < newImage.getWidth(); x++) {
+                        Color prevPixelColor = new Color(baseImage.getRGB(x, y));
+                        int red = prevPixelColor.getRed();
+                        int green = prevPixelColor.getGreen();
+                        int blue = prevPixelColor.getBlue();
 
-                    int gray = (int) ((red+blue+green)/3);
+                        int gray = (int) ((red + blue + green) / 3);
 
-                    int binaryColor = 0;
-                    if (gray > threshold) {
-                        binaryColor = 255;
+                        int binaryColor = 0;
+                        if (gray > threshold) {
+                            binaryColor = 255;
+                        }
+                        newImage.setRGB(x, y, new Color(binaryColor, binaryColor, binaryColor).getRGB());
                     }
-                    newImage.setRGB(x, y, new Color (binaryColor, binaryColor, binaryColor).getRGB());
+                });
+                for (int x = 0; x < newImage.getWidth(); x++) {
                 }
-            });
-            for (int x = 0; x < newImage.getWidth(); x++) {
             }
+            executor.shutdown();
+            try {
+                executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SimpleThreadPool.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setInnerPreviewImage(newImage);
+            if (getPreviewImageCheckBox().isSelected()) {
+                setOuterPreviewImage(newImage);
+            }
+            System.gc();
         }
-        executor.shutdown();
-        try {
-            executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SimpleThreadPool.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        setInnerPreviewImage(newImage);
-        if (getPreviewImageCheckBox().isSelected()) {
-            setOuterPreviewImage(newImage);
-        }
-        System.gc();
     }
 
     private void addComponents() {
@@ -227,7 +229,7 @@ public class BinarizationWindow extends FilterWindow {
     @Override
     protected void invokeAfterBuild() {
         super.invokeAfterBuild(); //To change body of generated methods, choose Tools | Templates.
-        entropyRadio.doClick();
+//        entropyRadio.doClick();
     }
 
 }

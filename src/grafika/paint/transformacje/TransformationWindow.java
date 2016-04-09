@@ -63,7 +63,9 @@ public abstract class TransformationWindow extends JDialog {
             @Override
             public void windowClosing(WindowEvent e) {
 //                imageEditor.setPreviewImage(null);
+//                getPanel().getTransformation().setHelperShape(null);
                 closeMe();
+                getPanel().repaint();
             }
 
         });

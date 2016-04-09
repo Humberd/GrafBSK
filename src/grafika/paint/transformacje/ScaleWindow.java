@@ -3,7 +3,9 @@ package grafika.paint.transformacje;
 import grafika.exceptions.GraphicsException;
 import grafika.paint.DrawingPanel;
 import grafika.paint.figury.DoublePoint;
+import grafika.paint.figury.Line;
 import grafika.paint.figury.Point;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -31,12 +33,20 @@ public class ScaleWindow extends TransformationWindow {
     private MouseAdapter adapter = new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            getPanel().getTransformation().setStartPoint(Point.getPoint(e.getPoint()));
+            Point currentPoint = Point.getPoint(e.getPoint());
+            getPanel().getTransformation().setStartPoint(currentPoint);
             centerPointInput.setText(Point.getPoint(e.getPoint()).toString());
             getPanel().addMouseListener(getPanel().getMyAdapter());
             getPanel().addMouseMotionListener(getPanel().getMyAdapter());
             getPanel().removeMouseListener(adapter);
             getPanel().removeMouseMotionListener(adapter);
+            
+            Line line = new Line();
+            line.setStarter(currentPoint);
+            line.setEnder(currentPoint);
+            line.setColor(Color.RED);
+            getPanel().getTransformation().setHelperShape(line);
+            getPanel().repaint();
         }
 
         @Override
@@ -81,6 +91,7 @@ public class ScaleWindow extends TransformationWindow {
                 } catch (GraphicsException ex) {
                     Logger.getLogger(TransformationWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                getPanel().repaint();
             }
         });
         scale = new JTextField(8);
@@ -101,7 +112,7 @@ public class ScaleWindow extends TransformationWindow {
         c.gridy = 1;
         JPanel anglePanel = new JPanel();
         add(anglePanel, c);
-        anglePanel.add(new JLabel("Angle"), c);
+        anglePanel.add(new JLabel("Scale ('x/y')"), c);
         anglePanel.add(scale, c);
     }
 
