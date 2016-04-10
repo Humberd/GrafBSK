@@ -14,6 +14,7 @@ import grafika.gimp.filtry.maski.AverageMaskFilter;
 import grafika.gimp.filtry.maski.HighPassMaskFilter;
 import grafika.gimp.filtry.maski.MedianMaskFilter;
 import grafika.gimp.filtry.maski.SobelMaskFilter;
+import grafika.gimp.filtry.morfologiczne.MorphologicalWindow;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -44,32 +45,12 @@ public class ImageWindow extends JPanel {
     private MedianMaskFilter medianMaskWindow;
     private HistogramFilter histogramFilterWindow;
     private BinarizationWindow binarizationWindow;
+    private MorphologicalWindow morphologicalWindow;
 
     public ImageWindow() {
         super();
         setName("image Editor");
         addComponents();
-        //        KeyAdapter keyAdapter = new KeyAdapter() {
-//            @Override
-//            public void keyTyped(KeyEvent e) {
-//                System.out.println(e.getModifiers()+"dupa");
-//            }
-//
-//            @Override
-//            public void keyPressed(KeyEvent e) {
-//                System.out.println("ok");
-//            }
-//
-//            
-//        };
-//        addKeyListener(keyAdapter);
-//        try {
-//            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/testJPG.jpg"));
-//            openedFile.openFile();
-//            imageEditor.pushNewImage(openedFile.getImage());
-//        } catch (FileException ex) {
-//            Logger.getLogger(ImageWindow.class.getName()).log(Level.SEVERE, null, ex);
-//        }
 //        try {
 //            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/lenna.png"));
 //            openedFile.openFile();
@@ -98,11 +79,6 @@ public class ImageWindow extends JPanel {
         c.gridx = 0;
         c.gridy = 1;
         add(imageEditor, c);
-
-//        setLayout(new BorderLayout());
-//        addFileMenu();
-//        add(menuBar, BorderLayout.NORTH);
-//        add(imageEditor, BorderLayout.CENTER);
     }
 
     private void addFileMenu() {
@@ -141,7 +117,7 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
-        
+
         JMenuItem saveFileItem = new JMenuItem("Save");
         KeyStroke ctrlS = KeyStroke.getKeyStroke("control S");
         saveFileItem.setAccelerator(ctrlS);
@@ -304,14 +280,24 @@ public class ImageWindow extends JPanel {
                 }
             }
         });
-        
+
         JMenuItem binarizationItem = new JMenuItem("Binarization");
-        binarizationItem.setAccelerator(testStroke);
         attachItem(binarizationItem, filterMenu, new Runnable() {
             @Override
             public void run() {
                 if (getBinarizationWindow() == null) {
                     setBinarizationWindow(new BinarizationWindow(ImageWindow.this));
+                }
+            }
+        });
+
+        JMenuItem morphologicalItem = new JMenuItem("Morphological Filters");
+        morphologicalItem.setAccelerator(testStroke);
+        attachItem(morphologicalItem, filterMenu, new Runnable() {
+            @Override
+            public void run() {
+                if (getMorphologicalWindow() == null) {
+                    setMorphologicalWindow(new MorphologicalWindow(ImageWindow.this));
                 }
             }
         });
@@ -336,7 +322,7 @@ public class ImageWindow extends JPanel {
         String[] fileExtensionTemp = fileName.split("\\.");
         String fileExtension = fileExtensionTemp[fileExtensionTemp.length - 1];
         fileExtension = fileExtension.toLowerCase();
-        
+
         switch (fileExtension) {
             case "ppm":
                 openedFile = new PPMextension(filePath);
@@ -455,5 +441,13 @@ public class ImageWindow extends JPanel {
 
     public void setBinarizationWindow(BinarizationWindow binarizationWindow) {
         this.binarizationWindow = binarizationWindow;
+    }
+
+    public MorphologicalWindow getMorphologicalWindow() {
+        return morphologicalWindow;
+    }
+
+    public void setMorphologicalWindow(MorphologicalWindow morphologicalWindow) {
+        this.morphologicalWindow = morphologicalWindow;
     }
 }

@@ -1,4 +1,4 @@
-package gafika.bezier;
+package grafika.bezier;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;

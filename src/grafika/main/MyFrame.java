@@ -13,7 +13,7 @@ import grafika.paint.Prymitywy;
 import grafika.gimp.ImageWindow;
 import bsk.szyfrowanie.transpozycja.TemplatePanel;
 import bsk.szyfrowanie.transpozycja.Vigenere;
-import gafika.bezier.BezierWindow;
+import grafika.bezier.BezierWindow;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,7 +68,7 @@ public class MyFrame extends JFrame {
                 System.out.println("22222");
             }
         });
-        menuItem = addMenuItem(true, new JMenuItem("3. Bezier"), new BezierWindow(), programsMap, new Runnable() {
+        menuItem = addMenuItem(false, new JMenuItem("3. Bezier"), new BezierWindow(), programsMap, new Runnable() {
             @Override
             public void run() {
                 System.out.println("33333");

@@ -1,4 +1,4 @@
-package gafika.bezier;
+package grafika.bezier;
 
 import grafika.paint.figury.Point;
 import java.awt.Color;

@@ -4,7 +4,6 @@ import grafika.gimp.ImageWindow;
 import grafika.gimp.filtry.FilterWindow;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,8 +27,6 @@ public class HighPassMaskFilter extends FilterWindow {
         BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
         ExecutorService executor = Executors.newWorkStealingPool();
-
-        WritableRaster raster = newImage.getRaster();
 
         final int maskSize = 3;
         int maskSideLength = (maskSize - 1) / 2;
