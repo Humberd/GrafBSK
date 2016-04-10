@@ -4,27 +4,32 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JPanel;
 
 public class Point {
 
     public int x;
     public int y;
 
-    private int drawRadius = 7;
+    private int drawRadius = 10;
 
     private Color drawColor = Color.BLACK;
+    
+    private boolean moving = false;
+    
+    private JPanel surface;
 
     private MouseAdapter mouseAdapter = new MouseAdapter() {
-        private boolean isMoving = false;
-
         @Override
         public void mouseDragged(MouseEvent e) {
             java.awt.Point p = e.getPoint();
             
-            System.out.println("hello");
-            if (isMoving) {
+            if (isMoving()) {
                 x = p.x;
                 y = p.y;
+                if (surface != null) {
+                    surface.repaint();
+                }
             }
         }
 
@@ -33,14 +38,14 @@ public class Point {
             java.awt.Point p = e.getPoint();
             double radius = Math.sqrt(Math.pow(p.x - x, 2) + Math.pow(p.y - y, 2));
             if (radius <= drawRadius) {
-                isMoving = true;
+                setMoving(true);
             }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
             java.awt.Point p = e.getPoint();
-            isMoving = false;
+            setMoving(false);
         }
     };
 
@@ -133,5 +138,21 @@ public class Point {
 
     public void setDrawColor(Color drawColor) {
         this.drawColor = drawColor;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+    public JPanel getSurface() {
+        return surface;
+    }
+
+    public void setSurface(JPanel surface) {
+        this.surface = surface;
     }
 }
