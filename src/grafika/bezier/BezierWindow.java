@@ -22,7 +22,7 @@ public class BezierWindow extends JPanel {
     private JButton clearButton = new JButton();
     private JButton deleteLastPointButton = new JButton();
 
-    private JCheckBox showLinesCheckBox = new JCheckBox("Show Lines");
+    private JCheckBox showLinesCheckBox = new JCheckBox("Show Lines",true);
 
     public BezierWindow() {
         super();

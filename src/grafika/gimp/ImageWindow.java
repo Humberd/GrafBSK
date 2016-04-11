@@ -46,13 +46,14 @@ public class ImageWindow extends JPanel {
     private HistogramFilter histogramFilterWindow;
     private BinarizationWindow binarizationWindow;
     private MorphologicalWindow morphologicalWindow;
+    private GreenFields greenFieldsWindow;
 
     public ImageWindow() {
         super();
         setName("image Editor");
         addComponents();
 //        try {
-//            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/lenna.png"));
+//            selectClassByExtensionName(new File("C:/Users/Sawik/Documents/pb.png"));
 //            openedFile.openFile();
 //            imageEditor.pushNewImage(openedFile.getImage());
 //        } catch (FileException ex) {
@@ -292,13 +293,21 @@ public class ImageWindow extends JPanel {
         });
 
         JMenuItem morphologicalItem = new JMenuItem("Morphological Filters");
-        morphologicalItem.setAccelerator(testStroke);
         attachItem(morphologicalItem, filterMenu, new Runnable() {
             @Override
             public void run() {
                 if (getMorphologicalWindow() == null) {
                     setMorphologicalWindow(new MorphologicalWindow(ImageWindow.this));
                 }
+            }
+        });
+        
+        JMenuItem greenFieldsItem = new JMenuItem("Green Fields");
+        greenFieldsItem.setAccelerator(testStroke);
+        attachItem(greenFieldsItem, filterMenu, new Runnable() {
+            @Override
+            public void run() {
+                new GreenFields(ImageWindow.this);
             }
         });
 
@@ -449,5 +458,13 @@ public class ImageWindow extends JPanel {
 
     public void setMorphologicalWindow(MorphologicalWindow morphologicalWindow) {
         this.morphologicalWindow = morphologicalWindow;
+    }
+
+    public GreenFields getGreenFieldsWindow() {
+        return greenFieldsWindow;
+    }
+
+    public void setGreenFieldsWindow(GreenFields greenFieldsWindow) {
+        this.greenFieldsWindow = greenFieldsWindow;
     }
 }

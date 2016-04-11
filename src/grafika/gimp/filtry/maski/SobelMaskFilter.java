@@ -30,11 +30,9 @@ public class SobelMaskFilter extends FilterWindow {
 
     public void filterImage() {
         BufferedImage baseImage = getImage();
-        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage newImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
         ExecutorService executor = Executors.newWorkStealingPool();
-
-        WritableRaster raster = newImage.getRaster();
 
         final int maskSize = 3;
         int maskSideLength = (maskSize - 1) / 2;
@@ -91,7 +89,6 @@ public class SobelMaskFilter extends FilterWindow {
                     }
                     Color newPixelColor = new Color(newRed, newGreen, newBlue);
                     newImage.setRGB(x, y, newPixelColor.getRGB());
-//                    raster.setPixel(x, y, new int[]{result});
                 }
             });
         }
