@@ -161,4 +161,8 @@ public class MatrixTransposition3 implements Cipher {
         return "ALA";
     }
 
+    @Override
+    public void setEncoding(int encoding) {
+    }
+
 }

@@ -1,5 +1,6 @@
 package grafika.main;
 
+import bsk.szyfrowanie.des.DESBridge;
 import bsk.szyfrowanie.strumieniowe.CiphertextAutokeyBridge;
 import bsk.szyfrowanie.strumieniowe.LinearFeedbackShiftRegisterBridge;
 import bsk.szyfrowanie.strumieniowe.StreamTemplatePanel;
@@ -32,6 +33,7 @@ public class MyFrame extends JFrame {
     private Map<JMenuItem, JPanel> programsMap = new LinkedHashMap<>();
     private Map<JMenuItem, JPanel> bskZad1Map = new LinkedHashMap<>();
     private Map<JMenuItem, JPanel> bskZad2Map = new LinkedHashMap<>();
+    private Map<JMenuItem, JPanel> bskZad3Map = new LinkedHashMap<>();
     private Map<JMenuItem, JPanel> testMap = new LinkedHashMap<>();
 
     public MyFrame() {
@@ -124,25 +126,35 @@ public class MyFrame extends JFrame {
 
         JMenu menu2Zad2 = new JMenu("2. Stream");
         menu2.add(menu2Zad2);
-        
+
         menuItem2 = addMenuItem(false, new JMenuItem("1. Generator LFSR"), new StreamTemplatePanel(new LinearFeedbackShiftRegisterBridge()), bskZad2Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Stream: Linear Feedbacl ShiftRegister");
             }
         });
-        
+
         menuItem2 = addMenuItem(false, new JMenuItem("2. Synchronous Stream Cipher"), new StreamTemplatePanel(new SynchronousStreamCipherBridge()), bskZad2Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Stream: Synchronous Stream Cipher");
             }
         });
-        
-        menuItem2 = addMenuItem(false, new JMenuItem("3. Ciphertext Autokey"), new StreamTemplatePanel(new CiphertextAutokeyBridge()),bskZad2Map, new Runnable() {
+
+        menuItem2 = addMenuItem(false, new JMenuItem("3. Ciphertext Autokey"), new StreamTemplatePanel(new CiphertextAutokeyBridge()), bskZad2Map, new Runnable() {
             @Override
             public void run() {
                 System.out.println("BSK: Stream: Ciphertext Autokey");
+            }
+        });
+
+        JMenu menu2Zad3 = new JMenu("3. Symmetric");
+        menu2.add(menu2Zad3);
+
+        menuItem2 = addMenuItem(true, new JMenuItem("3. DES"), new TemplatePanel(new DESBridge()), bskZad3Map, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("BSK: DES: Data Encryption Standard");
             }
         });
 
@@ -161,6 +173,7 @@ public class MyFrame extends JFrame {
         attachMenuItems(bskZad1Map, menu2Zad1);
         attachMenuItems(testMap, menu3);
         attachMenuItems(bskZad2Map, menu2Zad2);
+        attachMenuItems(bskZad3Map, menu2Zad3);
         //dolaczam menu do menuBar
         menuBar.add(menu);
         menuBar.add(menu2);
@@ -255,6 +268,14 @@ public class MyFrame extends JFrame {
 
     public void setBskZad2Map(Map<JMenuItem, JPanel> bskZad2Map) {
         this.bskZad2Map = bskZad2Map;
+    }
+
+    public Map<JMenuItem, JPanel> getBskZad3Map() {
+        return bskZad3Map;
+    }
+
+    public void setBskZad3Map(Map<JMenuItem, JPanel> bskZad3Map) {
+        this.bskZad3Map = bskZad3Map;
     }
 
 }

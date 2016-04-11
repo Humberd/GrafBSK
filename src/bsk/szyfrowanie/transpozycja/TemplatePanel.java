@@ -1,7 +1,10 @@
 package bsk.szyfrowanie.transpozycja;
 
 import bsk.exceptions.CipherException;
+import bsk.file.extensions.BIN.BinaryFileReader;
+import bsk.szyfrowanie.strumieniowe.StreamTemplatePanel;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -15,12 +18,17 @@ import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.JTextComponent;
 
 public class TemplatePanel extends JPanel {
@@ -41,6 +49,7 @@ public class TemplatePanel extends JPanel {
     private JTextField keyInput = new JTextField();
 
     private JButton messageInputPasteButton = new JButton("Paste");
+    private JButton keyInputPasteButton = new JButton("Paste");
 
     private JButton keyOutputCopyButton = new JButton("Copy");
     private JButton messageOutputCopyButton = new JButton("Copy");
@@ -48,11 +57,21 @@ public class TemplatePanel extends JPanel {
 
     private JButton encryptButton = new JButton("Encrypt");
     private JButton decryptButton = new JButton("Decrypt");
+    private JButton importMessageButton = new JButton("Import Message");
+    private JButton exportResultButton = new JButton("Export Result");
+    private JButton compareFilesButton = new JButton("Compare Files");
+
+    private JRadioButton binaryEncryptionRadio = new JRadioButton("Binary");
+    private JRadioButton hexEncryptionRadio = new JRadioButton("Hexadecimal");
+    private JRadioButton asciiEncryptionRadio = new JRadioButton("ASCII");
 
     private JPanel titlePanel = new JPanel();
     private JPanel resultPanel = new JPanel();
     private JPanel inputPanel = new JPanel();
     private JPanel actionPanel = new JPanel();
+
+    private String resultOutputString = new String();
+    private String messageOutputString = new String();
 
     private Cipher cipher;
 
@@ -67,10 +86,21 @@ public class TemplatePanel extends JPanel {
         addMainPanels();
 
         attachCopyButton(keyOutputCopyButton, keyOutput);
-        attachCopyButton(messageOutputCopyButton, messageOutput);
-        attachCopyButton(resultOutputCopyButton, resultOutput);
+        attachCopyButton(messageOutputCopyButton, messageOutput, new Runnable() {
+            @Override
+            public void run() {
+                copyToClipboard(messageOutputString);
+            }
+        });
+        attachCopyButton(resultOutputCopyButton, resultOutput, new Runnable() {
+            @Override
+            public void run() {
+                copyToClipboard(resultOutputString);
+            }
+        });
 
         attachPasteButton(messageInputPasteButton, messageInput);
+        attachPasteButton(keyInputPasteButton, keyInput);
 
         attachActionButtons();
     }
@@ -202,7 +232,7 @@ public class TemplatePanel extends JPanel {
         c.gridy = 0;
         inputPanel.add(messageInputLabel, c);
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         inputPanel.add(keyInputLabel, c);
 
         c.anchor = GridBagConstraints.LINE_START;
@@ -213,7 +243,7 @@ public class TemplatePanel extends JPanel {
         c.gridy = 0;
         inputPanel.add(messageInput, c);
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 2;
         inputPanel.add(keyInput, c);
 
         c.fill = GridBagConstraints.NONE;
@@ -223,6 +253,43 @@ public class TemplatePanel extends JPanel {
         c.gridx = 2;
         c.gridy = 0;
         inputPanel.add(messageInputPasteButton, c);
+        c.gridx = 2;
+        c.gridy = 2;
+        inputPanel.add(keyInputPasteButton, c);
+
+        ButtonGroup buttonsGroup = new ButtonGroup();
+        buttonsGroup.add(binaryEncryptionRadio);
+        buttonsGroup.add(hexEncryptionRadio);
+        buttonsGroup.add(asciiEncryptionRadio);
+        JPanel encodingPanel = new JPanel();
+        encodingPanel.add(new JLabel("Encoding: "));
+        encodingPanel.add(binaryEncryptionRadio);
+        encodingPanel.add(hexEncryptionRadio);
+        encodingPanel.add(asciiEncryptionRadio);
+        binaryEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setEncoding(Cipher.BINARY);
+            }
+        });
+        hexEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setEncoding(Cipher.HEX);
+            }
+        });
+        hexEncryptionRadio.doClick();
+        asciiEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setEncoding(Cipher.ASCII);
+            }
+        });
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 3;
+        inputPanel.add(encodingPanel, c);
+
     }
 
     private void setActionPanel(JPanel actionPanel) {
@@ -232,18 +299,32 @@ public class TemplatePanel extends JPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0.5;
         c.weightx = 0.5;
-        c.insets = new Insets(10, 10, 10, 10);
+        c.insets = new Insets(5, 10, 5, 10);
+        JPanel filePanel = new JPanel();
+        filePanel.add(importMessageButton);
+        filePanel.add(exportResultButton);
+        filePanel.add(compareFilesButton);
+        c.gridwidth = 2;
         c.gridx = 0;
         c.gridy = 0;
+        actionPanel.add(filePanel, c);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 1;
         actionPanel.add(encryptButton, c);
         c.gridx = 1;
-        c.gridy = 0;
+        c.gridy = 1;
         actionPanel.add(decryptButton, c);
     }
 
     public void setCorrectResult(String result) {
         resultOutput.setBackground(new Color(82, 249, 132));
-        resultOutput.setText(result);
+        String printResult = result;
+        resultOutputString = result;
+        if (result.length() > 250) {
+            printResult = result.substring(0, 250) + "...";
+        }
+        resultOutput.setText(printResult);
     }
 
     public void setErrorResult(String errorResult) {
@@ -253,10 +334,6 @@ public class TemplatePanel extends JPanel {
 
     public void setKeyOutputText(String text) {
         keyOutput.setText(text);
-    }
-
-    public void setMessageOutputText(String text) {
-        messageOutput.setText(text);
     }
 
     public void clearInputs() {
@@ -270,16 +347,12 @@ public class TemplatePanel extends JPanel {
         clipboard.setContents(stringSelection, null);
     }
 
-    private void attachCopyButton(JButton button, JTextComponent textComponent) {
+    private void attachCopyButton(JButton button, JTextComponent textComponent, Runnable runnable) {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 button.setEnabled(false);
 
-                Thread th = new Thread(new Runnable() {
-                    public void run() {
-                        copyToClipboard(textComponent.getText());
-                    }
-                });
+                Thread th = new Thread(runnable);
 
                 th.start();
                 try {
@@ -290,6 +363,15 @@ public class TemplatePanel extends JPanel {
                 button.setEnabled(true);
             }
 
+        });
+    }
+
+    private void attachCopyButton(JButton button, JTextComponent textComponent) {
+        attachCopyButton(button, textComponent, new Runnable() {
+            @Override
+            public void run() {
+                copyToClipboard(textComponent.getText());
+            }
         });
     }
 
@@ -335,7 +417,7 @@ public class TemplatePanel extends JPanel {
             public void run() {
                 String message = getMessageInput().getText() != null ? getMessageInput().getText() : "";
                 String key = getKeyInput().getText() != null ? getKeyInput().getText() : "";
-                setMessageOutputText(message);
+                setMessageOutputString(message);
                 setKeyOutputText(key);
                 try {
                     setCorrectResult(getCipher().encrypt(message, key));
@@ -353,7 +435,7 @@ public class TemplatePanel extends JPanel {
             public void run() {
                 String message = getMessageInput().getText() != null ? getMessageInput().getText() : "";
                 String key = getKeyInput().getText() != null ? getKeyInput().getText() : "";
-                setMessageOutputText(message);
+                setMessageOutputString(message);
                 setKeyOutputText(key);
                 try {
                     setCorrectResult(getCipher().decrypyt(message, key));
@@ -363,7 +445,61 @@ public class TemplatePanel extends JPanel {
                     setErrorResult("Unknown Exception Error");
                 }
             }
+        });
 
+        attachFileButton(importMessageButton, new Runnable() {
+            @Override
+            public void run() {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("*.bin", "bin");
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.setPreferredSize(new Dimension(500, 500));
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    String message = BinaryFileReader.read(fileChooser.getSelectedFile().getAbsolutePath());
+                    messageInput.setText(message);
+                    binaryEncryptionRadio.doClick();
+                }
+            }
+        });
+        attachFileButton(exportResultButton, new Runnable() {
+            @Override
+            public void run() {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("*.bin", "bin");
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.setPreferredSize(new Dimension(500, 500));
+                int returnValue = fileChooser.showSaveDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    BinaryFileReader.save(fileChooser.getSelectedFile().getAbsolutePath() + ".bin", resultOutputString);
+                }
+            }
+        });
+
+        attachFileButton(compareFilesButton, new Runnable() {
+            @Override
+            public void run() {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("*.bin", "bin");
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setMultiSelectionEnabled(true);
+                fileChooser.setPreferredSize(new Dimension(500, 500));
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    boolean theSame = BinaryFileReader.compareFiles(fileChooser.getSelectedFiles());
+
+                    if (theSame) {
+                        JOptionPane.showMessageDialog(TemplatePanel.this, "Selected files are equal", "Files compare", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(TemplatePanel.this, "Selected files are different", "Files compare", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                }
+            }
         });
     }
 
@@ -386,6 +522,24 @@ public class TemplatePanel extends JPanel {
             }
 
         });
+    }
+
+    private void attachFileButton(JButton button, Runnable runnable) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runnable.run();
+            }
+        });
+    }
+
+    public void setMessageOutputString(String message) {
+        messageOutputString = message;
+        String printMessage = message;
+        if (message.length() > 50) {
+            printMessage = message.substring(0, 50) + "...";
+        }
+        messageOutput.setText(printMessage);
     }
 
     private void setActionButtonsEnabled(boolean enabled) {
@@ -536,9 +690,68 @@ public class TemplatePanel extends JPanel {
     public void setDecryptButton(JButton decryptButton) {
         this.decryptButton = decryptButton;
     }
-    
+
     public JPanel getInputPanel() {
         return inputPanel;
     }
 
+    public JButton getKeyInputPasteButton() {
+        return keyInputPasteButton;
+    }
+
+    public void setKeyInputPasteButton(JButton keyInputPasteButton) {
+        this.keyInputPasteButton = keyInputPasteButton;
+    }
+
+    public JButton getImportMessageButton() {
+        return importMessageButton;
+    }
+
+    public void setImportMessageButton(JButton importMessageButton) {
+        this.importMessageButton = importMessageButton;
+    }
+
+    public JButton getExportResultButton() {
+        return exportResultButton;
+    }
+
+    public void setExportResultButton(JButton exportResultButton) {
+        this.exportResultButton = exportResultButton;
+    }
+
+    public JButton getCompareFilesButton() {
+        return compareFilesButton;
+    }
+
+    public void setCompareFilesButton(JButton compareFilesButton) {
+        this.compareFilesButton = compareFilesButton;
+    }
+
+    public String getMessageOutputString() {
+        return messageOutputString;
+    }
+
+    public JRadioButton getBinaryEncryptionRadio() {
+        return binaryEncryptionRadio;
+    }
+
+    public void setBinaryEncryptionRadio(JRadioButton binaryEncryptionRadio) {
+        this.binaryEncryptionRadio = binaryEncryptionRadio;
+    }
+
+    public JRadioButton getHexEncryptionRadio() {
+        return hexEncryptionRadio;
+    }
+
+    public void setHexEncryptionRadio(JRadioButton hexEncryptionRadio) {
+        this.hexEncryptionRadio = hexEncryptionRadio;
+    }
+
+    public JRadioButton getAsciiEncryptionRadio() {
+        return asciiEncryptionRadio;
+    }
+
+    public void setAsciiEncryptionRadio(JRadioButton asciiEncryptionRadio) {
+        this.asciiEncryptionRadio = asciiEncryptionRadio;
+    }
 }

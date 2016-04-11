@@ -125,4 +125,8 @@ public class RailFence implements Cipher {
         return "3";
     }
 
+    @Override
+    public void setEncoding(int encoding) {
+    }
+
 }

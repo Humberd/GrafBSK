@@ -146,4 +146,8 @@ public class Caesar implements Cipher {
         return "93,95";
     }
 
+    @Override
+    public void setEncoding(int encoding) {
+    }
+
 }

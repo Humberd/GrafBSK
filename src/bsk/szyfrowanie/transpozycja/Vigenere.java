@@ -75,4 +75,8 @@ public class Vigenere implements Cipher {
         return "BREAK";
     }
 
+    @Override
+    public void setEncoding(int encoding) {
+    }
+
 }

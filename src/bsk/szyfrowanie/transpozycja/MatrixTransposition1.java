@@ -95,4 +95,8 @@ public class MatrixTransposition1 implements Cipher {
         return "3-1-4-2";
     }
 
+    @Override
+    public void setEncoding(int encoding) {
+    }
+
 }

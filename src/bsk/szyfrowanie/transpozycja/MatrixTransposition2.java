@@ -121,4 +121,8 @@ public class MatrixTransposition2 implements Cipher {
         return "CONVENIENCE";
     }
 
+    @Override
+    public void setEncoding(int encoding) {
+    }
+
 }
