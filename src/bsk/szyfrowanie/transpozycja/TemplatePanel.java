@@ -61,9 +61,17 @@ public class TemplatePanel extends JPanel {
     private JButton exportResultButton = new JButton("Export Result");
     private JButton compareFilesButton = new JButton("Compare Files");
 
-    private JRadioButton binaryEncryptionRadio = new JRadioButton("Binary");
-    private JRadioButton hexEncryptionRadio = new JRadioButton("Hexadecimal");
-    private JRadioButton asciiEncryptionRadio = new JRadioButton("ASCII");
+    private JRadioButton resultBinaryEncryptionRadio = new JRadioButton("Binary");
+    private JRadioButton resultHexEncryptionRadio = new JRadioButton("Hexadecimal");
+    private JRadioButton resultAsciiEncryptionRadio = new JRadioButton("ASCII");
+
+    private JRadioButton messageBinaryEncryptionRadio = new JRadioButton("Binary");
+    private JRadioButton messageHexEncryptionRadio = new JRadioButton("Hexadecimal");
+    private JRadioButton messageAsciiEncryptionRadio = new JRadioButton("ASCII");
+
+    private JRadioButton keyBinaryEncryptionRadio = new JRadioButton("Binary");
+    private JRadioButton keyHexEncryptionRadio = new JRadioButton("Hexadecimal");
+    private JRadioButton keyAsciiEncryptionRadio = new JRadioButton("ASCII");
 
     private JPanel titlePanel = new JPanel();
     private JPanel resultPanel = new JPanel();
@@ -219,6 +227,39 @@ public class TemplatePanel extends JPanel {
         c.gridy = 2;
         resultPanel.add(resultOutputCopyButton, c);
 
+        ButtonGroup buttonsGroup = new ButtonGroup();
+        buttonsGroup.add(resultBinaryEncryptionRadio);
+        buttonsGroup.add(resultHexEncryptionRadio);
+        buttonsGroup.add(resultAsciiEncryptionRadio);
+        JPanel encodingPanel = new JPanel();
+        encodingPanel.add(new JLabel("Result Encoding: "));
+        encodingPanel.add(resultBinaryEncryptionRadio);
+        encodingPanel.add(resultHexEncryptionRadio);
+        encodingPanel.add(resultAsciiEncryptionRadio);
+        resultBinaryEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setResultEncoding(Cipher.BINARY);
+            }
+        });
+        resultHexEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setResultEncoding(Cipher.HEX);
+            }
+        });
+        resultHexEncryptionRadio.doClick();
+        resultAsciiEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setResultEncoding(Cipher.ASCII);
+            }
+        });
+        c.insets = new Insets(0, 5, 0, 0);
+        c.gridx = 0;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        resultPanel.add(encodingPanel, c);
     }
 
     private void setInputPanel(JPanel inputPanel) {
@@ -258,38 +299,72 @@ public class TemplatePanel extends JPanel {
         inputPanel.add(keyInputPasteButton, c);
 
         ButtonGroup buttonsGroup = new ButtonGroup();
-        buttonsGroup.add(binaryEncryptionRadio);
-        buttonsGroup.add(hexEncryptionRadio);
-        buttonsGroup.add(asciiEncryptionRadio);
+        buttonsGroup.add(messageBinaryEncryptionRadio);
+        buttonsGroup.add(messageHexEncryptionRadio);
+        buttonsGroup.add(messageAsciiEncryptionRadio);
         JPanel encodingPanel = new JPanel();
-        encodingPanel.add(new JLabel("Encoding: "));
-        encodingPanel.add(binaryEncryptionRadio);
-        encodingPanel.add(hexEncryptionRadio);
-        encodingPanel.add(asciiEncryptionRadio);
-        binaryEncryptionRadio.addActionListener(new ActionListener() {
+        encodingPanel.add(new JLabel("Message Encoding: "));
+        encodingPanel.add(messageBinaryEncryptionRadio);
+        encodingPanel.add(messageHexEncryptionRadio);
+        encodingPanel.add(messageAsciiEncryptionRadio);
+        messageBinaryEncryptionRadio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cipher.setEncoding(Cipher.BINARY);
+                cipher.setMessageEncoding(Cipher.BINARY);
             }
         });
-        hexEncryptionRadio.addActionListener(new ActionListener() {
+        messageHexEncryptionRadio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cipher.setEncoding(Cipher.HEX);
+                cipher.setMessageEncoding(Cipher.HEX);
             }
         });
-        hexEncryptionRadio.doClick();
-        asciiEncryptionRadio.addActionListener(new ActionListener() {
+        messageHexEncryptionRadio.doClick();
+        messageAsciiEncryptionRadio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cipher.setEncoding(Cipher.ASCII);
+                cipher.setMessageEncoding(Cipher.ASCII);
             }
         });
+        c.insets = new Insets(0, 5, 0, 0);
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 3;
         inputPanel.add(encodingPanel, c);
-
+        
+        ButtonGroup buttonsGroup2 = new ButtonGroup();
+        buttonsGroup2.add(keyBinaryEncryptionRadio);
+        buttonsGroup2.add(keyHexEncryptionRadio);
+        buttonsGroup2.add(keyAsciiEncryptionRadio);
+        JPanel encodingPanel2 = new JPanel();
+        encodingPanel2.add(new JLabel("Key Encoding: "));
+        encodingPanel2.add(keyBinaryEncryptionRadio);
+        encodingPanel2.add(keyHexEncryptionRadio);
+        encodingPanel2.add(keyAsciiEncryptionRadio);
+        keyBinaryEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setKeyEncoding(Cipher.BINARY);
+            }
+        });
+        keyHexEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setKeyEncoding(Cipher.HEX);
+            }
+        });
+        keyHexEncryptionRadio.doClick();
+        keyAsciiEncryptionRadio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cipher.setKeyEncoding(Cipher.ASCII);
+            }
+        });
+        c.insets = new Insets(0, 5, 0, 0);
+        c.gridx = 0;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        inputPanel.add(encodingPanel2, c);
     }
 
     private void setActionPanel(JPanel actionPanel) {
@@ -459,7 +534,7 @@ public class TemplatePanel extends JPanel {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     String message = BinaryFileReader.read(fileChooser.getSelectedFile().getAbsolutePath());
                     messageInput.setText(message);
-                    binaryEncryptionRadio.doClick();
+                    messageBinaryEncryptionRadio.doClick();
                 }
             }
         });
@@ -731,27 +806,27 @@ public class TemplatePanel extends JPanel {
         return messageOutputString;
     }
 
-    public JRadioButton getBinaryEncryptionRadio() {
-        return binaryEncryptionRadio;
+    public JRadioButton getMessageBinaryEncryptionRadio() {
+        return messageBinaryEncryptionRadio;
     }
 
-    public void setBinaryEncryptionRadio(JRadioButton binaryEncryptionRadio) {
-        this.binaryEncryptionRadio = binaryEncryptionRadio;
+    public void setMessageBinaryEncryptionRadio(JRadioButton messageBinaryEncryptionRadio) {
+        this.messageBinaryEncryptionRadio = messageBinaryEncryptionRadio;
     }
 
-    public JRadioButton getHexEncryptionRadio() {
-        return hexEncryptionRadio;
+    public JRadioButton getMessageHexEncryptionRadio() {
+        return messageHexEncryptionRadio;
     }
 
-    public void setHexEncryptionRadio(JRadioButton hexEncryptionRadio) {
-        this.hexEncryptionRadio = hexEncryptionRadio;
+    public void setMessageHexEncryptionRadio(JRadioButton messageHexEncryptionRadio) {
+        this.messageHexEncryptionRadio = messageHexEncryptionRadio;
     }
 
-    public JRadioButton getAsciiEncryptionRadio() {
-        return asciiEncryptionRadio;
+    public JRadioButton getMessageAsciiEncryptionRadio() {
+        return messageAsciiEncryptionRadio;
     }
 
-    public void setAsciiEncryptionRadio(JRadioButton asciiEncryptionRadio) {
-        this.asciiEncryptionRadio = asciiEncryptionRadio;
+    public void setMessageAsciiEncryptionRadio(JRadioButton messageAsciiEncryptionRadio) {
+        this.messageAsciiEncryptionRadio = messageAsciiEncryptionRadio;
     }
 }

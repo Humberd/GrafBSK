@@ -94,9 +94,4 @@ public class MatrixTransposition1 implements Cipher {
     public String getTemplateKey() {
         return "3-1-4-2";
     }
-
-    @Override
-    public void setEncoding(int encoding) {
-    }
-
 }

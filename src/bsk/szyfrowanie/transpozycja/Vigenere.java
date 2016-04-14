@@ -74,9 +74,4 @@ public class Vigenere implements Cipher {
     public String getTemplateKey() {
         return "BREAK";
     }
-
-    @Override
-    public void setEncoding(int encoding) {
-    }
-
 }

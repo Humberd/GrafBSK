@@ -191,4 +191,34 @@ public class Converters {
         }
         return arr;
     }
+////////////////////////////////////////////////////
+
+    public static int[] changeBinIntsLength(int[] arr, int outputLength) throws CipherException {
+        if (arr == null) {
+            throw new CipherException("Cannot change binInts length of null");
+        }
+        if (outputLength < 0) {
+            throw new CipherException("Cannot change bintInts - length: '" + outputLength + "' must be positive");
+        }
+        int difference = outputLength - arr.length;
+        if (difference == 0) {
+            return arr;
+        }
+        int[] newArray = new int[outputLength];
+        if (difference > 0) {
+            System.arraycopy(arr, 0, newArray, difference, arr.length);
+        } else if (difference < 0) {
+            System.arraycopy(arr, Math.abs(difference), newArray, 0, newArray.length);
+        }
+        return newArray;
+    }
+
+    public static int[][] invertArray(int[][] arr) {
+        for (int i = 0; i < arr.length / 2; i++) {
+            int[] temp = arr[i];
+            arr[i] = arr[arr.length - i - 1];
+            arr[arr.length - i - 1] = temp;
+        }
+        return arr;
+    }
 }

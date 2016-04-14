@@ -120,9 +120,4 @@ public class MatrixTransposition2 implements Cipher {
     public String getTemplateKey() {
         return "CONVENIENCE";
     }
-
-    @Override
-    public void setEncoding(int encoding) {
-    }
-
 }

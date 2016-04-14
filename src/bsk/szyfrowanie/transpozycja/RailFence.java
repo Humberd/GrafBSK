@@ -124,9 +124,4 @@ public class RailFence implements Cipher {
     public String getTemplateKey() {
         return "3";
     }
-
-    @Override
-    public void setEncoding(int encoding) {
-    }
-
 }

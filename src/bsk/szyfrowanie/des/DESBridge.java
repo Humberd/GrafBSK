@@ -7,20 +7,22 @@ import java.util.Arrays;
 public class DESBridge implements Cipher {
 
     private DES des = new DES();
-    private int encoding;
+    private int messageEncoding;
+    private int keyEncoding;
+    private int resultEncoding;
 
     @Override
     public String encrypt(String message, String key) throws CipherException {
-        int[] newMessage = decodeString(message, this.encoding);
-        int[] newKey = decodeString(key, this.encoding);
-        return encodeBin(des.encrypt(newMessage, newKey), this.encoding);
+        int[] newMessage = decodeString(message, this.messageEncoding);
+        int[] newKey = decodeString(key, this.keyEncoding);
+        return encodeBin(des.encrypt(newMessage, newKey), this.resultEncoding);
     }
 
     @Override
     public String decrypyt(String message, String key) throws CipherException {
-        int[] newMessage = decodeString(message, this.encoding);
-        int[] newKey = decodeString(key, this.encoding);
-        return encodeBin(des.decrypt(newMessage, newKey), this.encoding);
+        int[] newMessage = decodeString(message, this.messageEncoding);
+        int[] newKey = decodeString(key, this.keyEncoding);
+        return encodeBin(des.decrypt(newMessage, newKey), this.resultEncoding);
     }
 
     private int[] decodeString(String message, int encoding) throws CipherException {
@@ -75,8 +77,18 @@ public class DESBridge implements Cipher {
     }
 
     @Override
-    public void setEncoding(int encoding) {
-        this.encoding = encoding;
+    public void setKeyEncoding(int encoding) {
+        System.out.println(encoding);
+        this.keyEncoding = encoding;
     }
 
+    @Override
+    public void setMessageEncoding(int encoding) {
+        this.messageEncoding = encoding;
+    }
+
+    @Override
+    public void setResultEncoding(int encoding) {
+        this.resultEncoding = encoding;
+    }
 }
