@@ -12,40 +12,46 @@ public class DES {
     public int[] encrypt(int[] message, int[] key) throws CipherException {
         int numberOfMessageBlocks = message.length / 64;
         int messageRemainder = message.length % 64;
-        numberOfMessageBlocks += (messageRemainder > 0) ? 1 : 0;
+        numberOfMessageBlocks += 1;
+
+        int[] paddingMessage = new int[numberOfMessageBlocks * 64];
+        System.arraycopy(message, 0, paddingMessage, 0, message.length);
+        paddingMessage[(numberOfMessageBlocks - 1) * 64 + messageRemainder] = 1;
 
         int[] result = new int[numberOfMessageBlocks * 64];
         int[][] keys = generateKeyParts(key);
 
         for (int i = 0; i < numberOfMessageBlocks; i++) {
             int[] messagePart = new int[64];
-            if (numberOfMessageBlocks - 1 == i && messageRemainder != 0) {
-                System.arraycopy(message, i * 64, messagePart, 0, messageRemainder);
-            } else {
-                System.arraycopy(message, i * 64, messagePart, 0, 64);
-            }
+            System.arraycopy(paddingMessage, i * 64, messagePart, 0, 64);
             System.arraycopy(mainAlgorithm(messagePart, keys), 0, result, i * 64, 64);
         }
+
         return result;
     }
 
     public int[] decrypt(int[] message, int[] key) throws CipherException {
         int numberOfMessageBlocks = message.length / 64;
         int messageRemainder = message.length % 64;
-        numberOfMessageBlocks += (messageRemainder > 0) ? 1 : 0;
-
         int[] result = new int[numberOfMessageBlocks * 64];
         int[][] keys = Converters.invertArray(generateKeyParts(key));
+
         for (int i = 0; i < numberOfMessageBlocks; i++) {
             int[] messagePart = new int[64];
-            if (numberOfMessageBlocks - 1 == i && messageRemainder != 0) {
-                System.arraycopy(message, i * 64, messagePart, 0, messageRemainder);
-            } else {
-                System.arraycopy(message, i * 64, messagePart, 0, 64);
-            }
+            System.arraycopy(message, i * 64, messagePart, 0, 64);
             System.arraycopy(mainAlgorithm(messagePart, keys), 0, result, i * 64, 64);
         }
-        return result;
+
+        int paddingPositionCut = 0;
+        for (int i = result.length - 1; i >= 0; i--) {
+            if (result[i] == 1) {
+                paddingPositionCut = i;
+                break;
+            }
+        }
+        int[] paddedResult = new int[paddingPositionCut];
+        System.arraycopy(result, 0, paddedResult, 0, paddingPositionCut);
+        return paddedResult;
     }
 
     public int[] mainAlgorithm(int[] message, int[][] keys) throws CipherException {
