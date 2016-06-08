@@ -150,43 +150,6 @@ public class BezierDrawingPanel extends JPanel {
     }
 
     public long quickNewtonSymbol(int n, int k) {
-//        if (k == 0 || k == n) {
-//            return 1;
-//        }
-//        // take the lowest possible k to reduce computing using: n over k = n over (n-k)
-//        k = java.lang.Math.min(k, n - k);
-//
-//        // holds the high number: fi. (1000 over 990) holds 991..1000
-//        long highnumber[] = new long[k];
-//        for (int i = 0; i < k; i++) {
-//            highnumber[i] = n - i; // the high number first order is important
-//        }    // holds the dividers: fi. (1000 over 990) holds 2..10
-//        int dividers[] = new int[k - 1];
-//        for (int i = 0; i < k - 1; i++) {
-//            dividers[i] = k - i;
-//        }
-//
-//        // for every dividers there is always exists a highnumber that can be divided by 
-//        // this, the number of highnumbers being a sequence that equals the number of 
-//        // dividers. Thus, the only trick needed is to divide in reverse order, so 
-//        // divide the highest divider first trying it on the highest highnumber first. 
-//        // That way you do not need to do any tricks with primes.
-//        for (int divider : dividers) {
-//            for (int i = 0; i < k; i++) {
-//                if (highnumber[i] % divider == 0) {
-//                    highnumber[i] /= divider;
-//                    break;
-//                }
-//            }
-//        }
-//
-//        // multiply remainder of highnumbers
-//        long result = 1;
-//        for (long high : highnumber) {
-//            result *= high;
-//        }
-//        return result;
-
         if (k == 0) {
             return 1;
         }
